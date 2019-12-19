@@ -8,7 +8,7 @@ namespace MusicTheory.Features.Question
 {
     public interface IQuestionRepository
     {
-        QuestionModel GetQuestion(int id);
+        Lesson GetLesson(int id);
     }
     public class QuestionRepository : IQuestionRepository
     {
@@ -17,27 +17,42 @@ namespace MusicTheory.Features.Question
 
         }
 
-        public QuestionModel GetQuestion(int id)
+        public Lesson GetLesson(int lessonId)
         {
-            var options = new List<IQuestionOption> {
+            var options = new List<TextQuestionOption> {
                 new TextQuestionOption {
                     Id = 1,
-                    QuestionId = id,
+                    QuestionId = lessonId,
                     Text="Option1"
                 },
-                new ImageQuestionOption {
-                    Id = 2,
-                    QuestionId = id,
-                    Image = new byte[0]
+                new TextQuestionOption {
+                    Id = 3,
+                    QuestionId = lessonId,
+                    Text="Option2"
+                },
+                new TextQuestionOption {
+                    Id = 4,
+                    QuestionId = lessonId,
+                    Text="Option3"
+                },
+            };
+
+            var lesson = new Lesson
+            {
+                Id = lessonId,
+                Name = "Major Scale",
+                Questions = new List<QuestionModel> {
+                    new QuestionModel
+                    {
+                        Id = lessonId,
+                        QuestionText = "This is the first question",
+                        TextOptions = options,
+                        AnswerId = 3
+                    }
                 }
             };
 
-            return new QuestionModel
-            {
-                Id = id,
-                QuestionText = "This is the first question",
-                Options = options
-            };
+            return lesson;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace MusicTheory.Features.Question
 {
     public interface IQuestionService
     {
-        QuestionModel GetQuestion(int id);
+        Lesson GetLesson(int id);
     }
     public class QuestionService : IQuestionService
     {
@@ -18,9 +18,9 @@ namespace MusicTheory.Features.Question
         {
             _repository = repository;
         }
-        public QuestionModel GetQuestion(int id)
+        public Lesson GetLesson(int id)
         {
-            return _repository.GetQuestion(id);
+            return _repository.GetLesson(id);
         }
     }
 }

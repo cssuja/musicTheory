@@ -1,0 +1,20 @@
+button.action-button {
+    margin:10px;
+    width: 100px;
+}
+
+.question {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.question-text {
+    margin: 50px 0px 30px 0px;
+    font-size: larger;
+    font-weight: bold;
+}
+
+.option {
+    margin: 5px;
+}

@@ -23,10 +23,21 @@ namespace MusicTheory.Tests.Features.Question
         [Fact]
         public void GetQuestion_Should_Return_Correct_Question_From_Repository()
         {
-            var expectedQuestion = new QuestionModel { Id = 5, QuestionText = "This is the first question" };
-            _mockRepository.Setup(x => x.GetQuestion(expectedQuestion.Id)).Returns(expectedQuestion);
-            var actualQuestion = _service.GetQuestion(expectedQuestion.Id);
-            actualQuestion.Should().Be(expectedQuestion);
+            var expectedLesson = new Lesson
+            {
+                Id = 2,
+                Name = "Major Scale",
+                Questions = new List<QuestionModel> {
+                    new QuestionModel {
+                        Id = 5,
+                        QuestionText = "This is the first question"
+                    }
+                }
+            };
+
+            _mockRepository.Setup(x => x.GetLesson(expectedLesson.Id)).Returns(expectedLesson);
+            var actualLesson = _service.GetLesson(expectedLesson.Id);
+            actualLesson.Should().Be(expectedLesson);
 
         }
     }

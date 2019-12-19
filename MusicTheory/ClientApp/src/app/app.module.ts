@@ -29,7 +29,7 @@ import { QuestionModule } from './question/question.module';
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
-      { path: 'question', component: QuestionComponent },
+      { path: 'lesson/:lessonId', component: QuestionComponent },
     ])
   ],
   providers: [],

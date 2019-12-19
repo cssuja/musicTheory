@@ -1,1 +1,40 @@
-<p>question works!</p>
+<div class="container-fluid" *ngIf="currentQuestion">
+  <div class="question">
+    <div class="row question-text">
+      {{currentQuestion?.questionText}}
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <div class="list-group">
+          <button *ngFor="let option of currentQuestion.textOptions" (click)="setSelectedOption(option.id)"
+            class="list-group-item list-group-item-action option">
+            {{option.text}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="row" *ngIf="!displayResultPanel">
+    <div class="col-md-6 col-12 text-center">
+      <button class="btn btn-primary action-button">Skip</button>
+    </div>
+    <div class="col-md-6 col-12 text-center">
+      <button class="btn btn-primary action-button" (click)="checkIfCorrect()">Check</button>
+    </div>
+  </div>
+  <div class="row" *ngIf="displayResultPanel">
+    <div class="col-md-6 col-12 text-center" *ngIf="isAnswerCorrect">
+      You are correct!
+    </div>
+    <div class="col-md-6 col-12 text-center" *ngIf="!isAnswerCorrect">
+      Correct solution {{correctAnswer.text}}
+    </div>
+    <div class="col-md-6 col-12 text-center">
+      <button class="btn btn-primary action-button" (click)="checkIfCorrect()">Continue</button>
+    </div>
+  </div>
+</div>

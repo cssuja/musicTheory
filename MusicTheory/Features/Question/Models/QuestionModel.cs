@@ -9,7 +9,8 @@ namespace MusicTheory.Features.Question.Models
     {
         public int Id { get; set; }
         public string QuestionText { get; set; }
-        public string Answer { get; set; }
-        public List<IQuestionOption> Options { get; set; }
+        public int AnswerId { get; set; }
+        public List<TextQuestionOption> TextOptions { get; set; }
+        public List<ImageQuestionOption> ImageOptions { get; set; }
     }
 }
