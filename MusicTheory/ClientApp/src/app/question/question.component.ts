@@ -39,9 +39,29 @@ export class QuestionComponent implements OnInit {
 
   checkIfCorrect() {
     this.displayResultPanel = true;
+    this.currentQuestion.answeredCorrectly = this.isAnswerCorrect;
   }
 
   setSelectedOption(optionId: number) {
     this.selectedOptionId = optionId;
+  }
+
+  moveToNext() {
+    this.selectedOptionId = null;
+    this.displayResultPanel = false;
+    if (this.currentQuestionIndex <= this.lesson.questions.length - 2) {
+      this.currentQuestionIndex++;
+    } else {
+      this.endLesson();
+    }
+  }
+
+  skip() {
+    this.currentQuestion.answeredCorrectly = false;
+    this.moveToNext();
+  }
+
+  endLesson() {
+    console.log('finish lesson', this.lesson.questions);
   }
 }

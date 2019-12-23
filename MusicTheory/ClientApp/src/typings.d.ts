@@ -4,6 +4,7 @@ interface QuestionModel {
     answerId: number;
     textOptions: TextQuestionOption[];
     imageOptions: ImageQuestionOption[];
+    answeredCorrectly: boolean;
 }
 
 interface IQuestionOption {
