@@ -10,11 +10,11 @@ namespace MusicTheory.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class QuestionController : ControllerBase
+    public class LessonController : ControllerBase
     {
-        private readonly IQuestionService _service;
+        private readonly ILessonService _service;
 
-        public QuestionController(IQuestionService service)
+        public LessonController(ILessonService service)
         {
             _service = service;
         }

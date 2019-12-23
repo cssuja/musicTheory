@@ -6,15 +6,15 @@ using MusicTheory.Features.Question.Models;
 
 namespace MusicTheory.Features.Question
 {
-    public interface IQuestionService
+    public interface ILessonService
     {
         Lesson GetLesson(int id);
     }
-    public class QuestionService : IQuestionService
+    public class LessonService : ILessonService
     {
-        private readonly IQuestionRepository _repository;
+        private readonly ILessonRepository _repository;
 
-        public QuestionService(IQuestionRepository repository)
+        public LessonService(ILessonRepository repository)
         {
             _repository = repository;
         }

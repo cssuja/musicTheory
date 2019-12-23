@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace MusicTheory.Features.Question
 {
-    public interface IQuestionRepository
+    public interface ILessonRepository
     {
         Lesson GetLesson(int id);
     }
-    public class QuestionRepository : IQuestionRepository
+    public class LessonRepository : ILessonRepository
     {
-        public QuestionRepository()
+        public LessonRepository()
         {
 
         }

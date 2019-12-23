@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http'
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -7,10 +7,10 @@ import { Observable } from 'rxjs';
 })
 export class QuestionService {
 
-    constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { }
 
-    getLesson(id: number): Observable<Lesson> {
-        const url = `https://localhost:44366/api/question?id=${id}`;
-        return this.http.get<Lesson>(url);
-    }
+  getLesson(id: number): Observable<Lesson> {
+    const url = `https://localhost:44366/api/lesson?id=${id}`;
+    return this.http.get<Lesson>(url);
+  }
 }
