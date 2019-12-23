@@ -11,13 +11,13 @@ namespace MusicTheory.Tests.Features.Question
 {
    public class QuestionServiceTests
     {
-        private readonly Mock<IQuestionRepository> _mockRepository;
-        private readonly IQuestionService  _service;
+        private readonly Mock<ILessonRepository> _mockRepository;
+        private readonly ILessonService  _service;
 
         public QuestionServiceTests()
         {
-            _mockRepository = new Mock<IQuestionRepository>();
-            _service = new QuestionService(_mockRepository.Object);
+            _mockRepository = new Mock<ILessonRepository>();
+            _service = new LessonService(_mockRepository.Object);
         }
 
         [Fact]

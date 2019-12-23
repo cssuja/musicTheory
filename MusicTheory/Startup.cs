@@ -27,8 +27,8 @@ namespace MusicTheory
             {
                 configuration.RootPath = "ClientApp/dist";
             });
-            services.AddScoped<IQuestionService, QuestionService>();
-            services.AddScoped<IQuestionRepository, QuestionRepository>();
+            services.AddScoped<ILessonService, LessonService>();
+            services.AddScoped<ILessonRepository, LessonRepository>();
 
         }
 
