@@ -37,11 +37,15 @@
        *ngIf="displayResultPanel">
     <div class="col-md-6 col-12 text-center"
          *ngIf="isAnswerCorrect">
+      <i class="material-icons text-success"
+         style="font-size:60px;">done</i>
       You are correct!
     </div>
     <div class="col-md-6 col-12 text-center"
          *ngIf="!isAnswerCorrect">
-      Correct solution {{correctAnswer.text}}
+      <i class="material-icons text-danger"
+         style="font-size:60px;">clear</i>
+      Correct solution: {{correctAnswer.text}}
     </div>
     <div class="col-md-6 col-12 text-center">
       <button class="btn btn-primary action-button"
