@@ -1,6 +1,9 @@
-﻿using MusicTheory.Features.Question.Models;
+﻿using Dapper;
+using Microsoft.Extensions.Configuration;
+using MusicTheory.Features.Question.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,13 +15,26 @@ namespace MusicTheory.Features.Question
     }
     public class LessonRepository : ILessonRepository
     {
-        public LessonRepository()
+        public LessonRepository(IConfiguration config)
         {
 
         }
 
         public Lesson GetLesson(int lessonId)
         {
+            using (var cnn = new SqlConnection("Data Source=(localdb)\\ProjectsV13;Initial Catalog=MusicTheory;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"))
+            {
+                cnn.Open();
+                using(var t = cnn.BeginTransaction())
+                {
+                    var sql = @"
+select * from Lessons
+";
+
+                    var x = cnn.Query<Lesson>(sql, transaction: t).FirstOrDefault();
+                }
+            }
+
             var options = new List<TextQuestionOption> {
                 new TextQuestionOption {
                     Id = 1,
