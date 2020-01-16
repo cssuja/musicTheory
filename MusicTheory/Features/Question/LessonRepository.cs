@@ -1,5 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using MusicTheory.Configuration;
 using MusicTheory.Features.Question.Models;
 using System;
 using System.Collections.Generic;
@@ -15,14 +17,15 @@ namespace MusicTheory.Features.Question
     }
     public class LessonRepository : ILessonRepository
     {
-        public LessonRepository(IConfiguration config)
+        private readonly MusicTheoryConfiguration _config;
+        public LessonRepository(IOptions<MusicTheoryConfiguration> config)
         {
-
+            _config = config.Value;
         }
 
         public Lesson GetLesson(int lessonId)
         {
-            using (var cnn = new SqlConnection("Data Source=(localdb)\\ProjectsV13;Initial Catalog=MusicTheory;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"))
+            using (var cnn = new SqlConnection(_config.ConnectionStrings.MusicTheoryConnectionString))
             {
                 cnn.Open();
                 using(var t = cnn.BeginTransaction())
