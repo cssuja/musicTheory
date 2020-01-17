@@ -17,6 +17,10 @@ export class QuestionComponent implements OnInit {
     return this.lesson && this.lesson.questions[this.currentQuestionIndex];
   }
 
+  get currentScore() {
+    return this.lesson.questions.map(q => (q.answeredCorrectly ? 1 : 0) as number).reduce((a, b) => a + b);
+  }
+
   get isAnswerCorrect() {
     return this.currentQuestion.answerId === this.selectedOptionId;
   }

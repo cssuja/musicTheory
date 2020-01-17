@@ -1,8 +1,16 @@
 <div class="container-fluid"
      *ngIf="currentQuestion">
   <div class="question">
+    <div class="row">
+      <div class="col-12">
+        <div class="text-right">
+          {{currentScore}}/{{lesson.questions.length}}
+        </div>
+      </div>
+    </div>
     <div class="row question-text">
-      {{currentQuestion?.questionText}}
+
+      <div [innerHTML]="currentQuestion?.questionText"></div>
     </div>
 
     <div class="row">
