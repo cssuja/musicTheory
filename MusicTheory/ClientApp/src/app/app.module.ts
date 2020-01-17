@@ -11,6 +11,8 @@ import { QuestionComponent } from './question/question.component';
 import { QuestionModule } from './question/question.module';
 import { LessonsComponent } from './lessons/lessons.component';
 import { LessonsModule } from './lessons/lessons.module';
+import { AddLessonModule } from './add-lesson/add-lesson.module';
+import { AddLessonComponent } from './add-lesson/add-lesson.component';
 
 @NgModule({
   declarations: [
@@ -24,10 +26,13 @@ import { LessonsModule } from './lessons/lessons.module';
     FormsModule,
     QuestionModule,
     LessonsModule,
+    AddLessonModule,
     RouterModule.forRoot([
       { path: '', component: LessonsComponent, pathMatch: 'full' },
       { path: 'lesson/:lessonId', component: QuestionComponent },
-      { path: 'lessons', component: LessonsComponent }
+      { path: 'lessons', component: LessonsComponent },
+      { path: 'addlesson', component: AddLessonComponent }
+
     ])
   ],
   providers: [],
