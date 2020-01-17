@@ -12,5 +12,6 @@ namespace MusicTheory.Features.Question.Models
         public int AnswerId { get; set; }
         public List<TextQuestionOption> TextOptions { get; set; }
         public List<ImageQuestionOption> ImageOptions { get; set; }
+        public int TypeId { get; set; }
     }
 }

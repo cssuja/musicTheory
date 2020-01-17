@@ -10,6 +10,7 @@ export class AddLessonComponent implements OnInit {
   lesson: Lesson = {} as Lesson;
   currentQuestion: QuestionModel;
   currentTextOption: TextQuestionOption;
+  currentOptionIsCorrect = false;
   constructor(private addLessonService: AddLessonService) { }
 
   ngOnInit() {
@@ -26,6 +27,7 @@ export class AddLessonComponent implements OnInit {
   initialiseCurrentQuestion() {
     this.currentQuestion = {} as QuestionModel;
     this.currentQuestion.textOptions = [];
+    this.currentQuestion.typeId = 1;
   }
 
   initialiseCurrentTextOption() {

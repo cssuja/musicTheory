@@ -161,10 +161,51 @@ select * from Lessons
                 using (var t = cnn.BeginTransaction())
                 {
                     var lessonSql = @"
-                 Insert into Lessons (Name) values (@name)
+                 Insert into Lessons (Name) values (@name);
+        SELECT CAST(SCOPE_IDENTITY() as int)";
+                  
+                  lesson.Id=  cnn.Query<int>(lessonSql, new {lesson.Name},t).Single();
+
+                    foreach (var question in lesson.Questions)
+                    {
+
+                        var questionSql = @"
+Insert into Questions(Text, AnswerOptionId, TypeId) values(@QuestionText, @AnswerId, @TypeId);
+ SELECT CAST(SCOPE_IDENTITY() as int)
 ";
-                    cnn.Execute(lessonSql, new {lesson.Name},t);
+                        question.Id = cnn.Query<int>(questionSql, new { question.QuestionText, question.AnswerId, question.TypeId }, t).Single();
+
+
+
+                        var lessonQuestionSql = @"
+Insert into LessonQuestions(LessonId, QuestionId) values(@lessonId,  @QuestionId);
+";
+                        cnn.Execute(lessonQuestionSql, new { lessonId = lesson.Id, QuestionId = question.Id }, t);
+
+                        foreach (var textOption in question.TextOptions)
+                        {
+
+                            var textOptionSql = @"
+Insert into TextOptions(Text) values(@Text);
+ SELECT CAST(SCOPE_IDENTITY() as int)
+";
+                            textOption.Id = cnn.Query<int>(textOptionSql, new { textOption.Text }, t).Single();
+
+
+
+                            var questionOptionsSql = @"
+Insert into QuestionOptions(QuestionId, OptionId) values(@questionId,  @optionId);
+";
+                            cnn.Execute(questionOptionsSql, new { questionId = question.Id, optionId = textOption.Id }, t);
+
+
+                        }
+
+                    }
+
+
                     t.Commit();
+
                 }
             }
         }

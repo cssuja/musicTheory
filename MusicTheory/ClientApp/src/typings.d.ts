@@ -5,6 +5,7 @@ interface QuestionModel {
     textOptions: TextQuestionOption[];
     imageOptions: ImageQuestionOption[];
     answeredCorrectly: boolean;
+    typeId: number;
 }
 
 interface IQuestionOption {
