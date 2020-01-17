@@ -13,7 +13,7 @@ namespace MusicTheory.Features.Question
 {
     public interface ILessonRepository
     {
-        Lesson GetLesson(int id);
+        Lesson GetLesson(int id, int maxNumberOfQuestions);
         List<Lesson> GetLessons();
     }
     public class LessonRepository : ILessonRepository
@@ -24,7 +24,7 @@ namespace MusicTheory.Features.Question
             _config = config.Value;
         }
 
-        public Lesson GetLesson(int lessonId)
+        public Lesson GetLesson(int lessonId, int maxNumberOfQuestions)
         {
             Lesson lesson;
             IList<QuestionModel> questions;
@@ -42,10 +42,10 @@ where Id = @lessonId
                     lesson = cnn.Query<Lesson>(lessonSql, new { lessonId }, transaction: t).FirstOrDefault();
 
                     var questionSql = @"
-select Id, Text as QuestionText, AnswerOptionId as AnswerId from Questions
+select top (@maxNumberOfQuestions) Id, Text as QuestionText, AnswerOptionId as AnswerId from Questions
 where Id in (select QuestionId from LessonQuestions where LessonId = @lessonId)
 ";
-                    questions = cnn.Query<QuestionModel>(questionSql, new { lessonId }, transaction: t).ToList();
+                    questions = cnn.Query<QuestionModel>(questionSql, new { lessonId, maxNumberOfQuestions }, transaction: t).ToList();
 
                     var textOptionsSql = @"
 select TextOptions.Id, TextOptions.Text from TextOptions 

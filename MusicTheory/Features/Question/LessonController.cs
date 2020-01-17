@@ -19,9 +19,9 @@ namespace MusicTheory.Controllers
             _service = service;
         }
         [HttpGet]
-        public Lesson Get([FromQuery] int id)
+        public Lesson Get([FromQuery] int id, [FromQuery] int maxNoOfQuestions)
         {
-            return _service.GetLesson(id);
+            return _service.GetLesson(id, maxNoOfQuestions);
         }
 
         [HttpGet("Lessons")]
