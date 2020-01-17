@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AddLessonService } from './add-lesson.service';
 
 @Component({
   selector: 'app-add-lesson',
@@ -9,9 +10,14 @@ export class AddLessonComponent implements OnInit {
   lesson: Lesson = {} as Lesson;
   currentQuestion: QuestionModel;
   currentTextOption: TextQuestionOption;
-  constructor() { }
+  constructor(private addLessonService: AddLessonService) { }
 
   ngOnInit() {
+    this.initialiseLesson();
+  }
+
+  initialiseLesson() {
+    this.lesson = {} as Lesson;
     this.lesson.questions = [];
     this.initialiseCurrentQuestion();
     this.initialiseCurrentTextOption();
@@ -36,6 +42,9 @@ export class AddLessonComponent implements OnInit {
   }
 
   submit() {
+    console.log('submit');
+    this.addLessonService.mergeLesson(this.lesson).subscribe();
+    this.initialiseLesson();
     console.log(this.lesson);
   }
 

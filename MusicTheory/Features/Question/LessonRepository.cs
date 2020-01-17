@@ -15,6 +15,7 @@ namespace MusicTheory.Features.Question
     {
         Lesson GetLesson(int id, int maxNumberOfQuestions);
         List<Lesson> GetLessons();
+        void MergeLesson(Lesson lesson);
     }
     public class LessonRepository : ILessonRepository
     {
@@ -149,6 +150,23 @@ select * from Lessons
                 }
             }
             return lessons;
+        }
+
+        public void MergeLesson(Lesson lesson)
+        {
+            using (var cnn = new SqlConnection(_config.ConnectionStrings.MusicTheoryConnectionString))
+            {
+                cnn.Open();
+
+                using (var t = cnn.BeginTransaction())
+                {
+                    var lessonSql = @"
+                 Insert into Lessons (Name) values (@name)
+";
+                    cnn.Execute(lessonSql, new {lesson.Name},t);
+                    t.Commit();
+                }
+            }
         }
     }
 }

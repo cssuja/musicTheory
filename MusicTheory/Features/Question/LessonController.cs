@@ -30,6 +30,12 @@ namespace MusicTheory.Controllers
             return _service.GetLessons();
         }
 
+        [HttpPost]
+        public void Post([FromBody] Lesson lesson)
+        {
+            _service.MergeLesson(lesson);
+        }
+
 
 
     }

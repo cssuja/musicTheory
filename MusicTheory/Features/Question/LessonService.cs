@@ -12,6 +12,7 @@ namespace MusicTheory.Features.Question
     {
         Lesson GetLesson(int id, int maxNumberOfQuestions);
         List<Lesson> GetLessons();
+       void MergeLesson(Lesson lesson);
     }
     public class LessonService : ILessonService
     {
@@ -39,6 +40,11 @@ namespace MusicTheory.Features.Question
         public List<Lesson> GetLessons()
         {
             return _repository.GetLessons();
+        }
+
+        public void MergeLesson(Lesson lesson)
+        {
+            _repository.MergeLesson(lesson);
         }
     }
 }
