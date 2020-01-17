@@ -36,7 +36,8 @@
               (click)="skip()">Skip</button>
     </div>
     <div class="col-md-6 col-12 text-center order-first order-md-last">
-      <button class="btn btn-primary action-button"
+      <button class="btn action-button"
+              [ngClass]="{'btn-success' : selectedOptionId, 'btn-secondary' : !selectedOptionId}"
               (click)="checkIfCorrect()"
               [disabled]="!selectedOptionId">Check</button>
     </div>
