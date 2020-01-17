@@ -21,3 +21,17 @@ button.action-button {
 .score {
   text-align: center;
 }
+
+.results-panel {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  min-height: 200px;
+}
+
+.result-text {
+  font-size: larger;
+  padding: 20px;
+  text-align: left;
+}
