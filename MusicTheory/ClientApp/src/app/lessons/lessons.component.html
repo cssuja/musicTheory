@@ -1,0 +1,10 @@
+<div class="container">
+  <p>Choose a lesson</p>
+
+  <div class="list-group">
+    <a [routerLink]="['/lesson/1']"
+       *ngFor="let lesson of lessons"
+       href="#"
+       class="list-group-item list-group-item-action">{{lesson.name}}</a>
+  </div>
+</div>

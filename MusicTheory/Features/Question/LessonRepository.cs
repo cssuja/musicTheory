@@ -14,6 +14,7 @@ namespace MusicTheory.Features.Question
     public interface ILessonRepository
     {
         Lesson GetLesson(int id);
+        List<Lesson> GetLessons();
     }
     public class LessonRepository : ILessonRepository
     {
@@ -129,6 +130,25 @@ where QuestionOptions.QuestionId = @questionId
             //};
 
             return lesson;
+        }
+
+        public List<Lesson> GetLessons()
+        {
+            List<Lesson> lessons;
+            using (var cnn = new SqlConnection(_config.ConnectionStrings.MusicTheoryConnectionString))
+            {
+                cnn.Open();
+
+                using (var t = cnn.BeginTransaction())
+                {
+                    var lessonSql = @"
+select * from Lessons
+";
+
+                    lessons = cnn.Query<Lesson>(lessonSql,  transaction: t).ToList();
+                }
+            }
+            return lessons;
         }
     }
 }

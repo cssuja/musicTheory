@@ -23,5 +23,14 @@ namespace MusicTheory.Controllers
         {
             return _service.GetLesson(id);
         }
+
+        [HttpGet("Lessons")]
+        public List<Lesson> Get()
+        {
+            return _service.GetLessons();
+        }
+
+
+
     }
 }

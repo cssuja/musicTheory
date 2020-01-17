@@ -9,6 +9,7 @@ namespace MusicTheory.Features.Question
     public interface ILessonService
     {
         Lesson GetLesson(int id);
+        List<Lesson> GetLessons();
     }
     public class LessonService : ILessonService
     {
@@ -21,6 +22,11 @@ namespace MusicTheory.Features.Question
         public Lesson GetLesson(int id)
         {
             return _repository.GetLesson(id);
+        }
+
+        public List<Lesson> GetLessons()
+        {
+            return _repository.GetLessons();
         }
     }
 }

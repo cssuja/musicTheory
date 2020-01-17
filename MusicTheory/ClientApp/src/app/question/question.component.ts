@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { QuestionService } from './question.service';
 
 @Component({
@@ -31,6 +31,7 @@ export class QuestionComponent implements OnInit {
   }
 
   constructor(private route: ActivatedRoute,
+    private router: Router,
     private service: QuestionService) { }
 
   ngOnInit() {
@@ -70,5 +71,14 @@ export class QuestionComponent implements OnInit {
     this.lessonEnded = true;
     this.displayResultPanel = true;
     console.log('finish lesson', this.lesson.questions);
+  }
+
+  continue() {
+    if (this.lessonEnded) {
+      this.router.navigate(['lessons']);
+
+    } else {
+      this.moveToNext();
+    }
   }
 }
