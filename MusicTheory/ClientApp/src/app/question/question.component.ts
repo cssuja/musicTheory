@@ -12,6 +12,7 @@ export class QuestionComponent implements OnInit {
   currentQuestionIndex = 0;
   selectedOptionId: number;
   displayResultPanel = false;
+  lessonEnded = false;
 
   get currentQuestion() {
     return this.lesson && this.lesson.questions[this.currentQuestionIndex];
@@ -66,6 +67,8 @@ export class QuestionComponent implements OnInit {
   }
 
   endLesson() {
+    this.lessonEnded = true;
+    this.displayResultPanel = true;
     console.log('finish lesson', this.lesson.questions);
   }
 }

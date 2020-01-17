@@ -1,6 +1,7 @@
 <div class="container-fluid"
      *ngIf="currentQuestion">
-  <div class="question">
+  <div *ngIf="!lessonEnded"
+       class="question">
     <div class="row">
       <div class="col-12">
         <div class="text-right">
@@ -27,6 +28,10 @@
     </div>
   </div>
 
+  <div *ngIf="lessonEnded">
+    <h3 class="score">Score : {{currentScore}}/{{lesson.questions.length}}</h3>
+  </div>
+
   <hr>
 
   <div class="row"
@@ -42,20 +47,24 @@
               [disabled]="!selectedOptionId">Check</button>
     </div>
   </div>
+
   <div class="row"
        *ngIf="displayResultPanel">
-    <div class="col-md-6 col-12 text-center"
-         *ngIf="isAnswerCorrect">
-      <i class="material-icons text-success"
-         style="font-size:60px;">done</i>
-      You are correct!
+    <div *ngIf="!lessonEnded">
+      <div class="col-md-6 col-12 text-center"
+           *ngIf="isAnswerCorrect">
+        <i class="material-icons text-success"
+           style="font-size:60px;">done</i>
+        You are correct!
+      </div>
+      <div class="col-md-6 col-12 text-center"
+           *ngIf="!isAnswerCorrect">
+        <i class="material-icons text-danger"
+           style="font-size:60px;">clear</i>
+        Correct solution: {{correctAnswer.text}}
+      </div>
     </div>
-    <div class="col-md-6 col-12 text-center"
-         *ngIf="!isAnswerCorrect">
-      <i class="material-icons text-danger"
-         style="font-size:60px;">clear</i>
-      Correct solution: {{correctAnswer.text}}
-    </div>
+
     <div class="col-md-6 col-12 text-center">
       <button class="btn btn-primary action-button"
               (click)="moveToNext()">Continue</button>
