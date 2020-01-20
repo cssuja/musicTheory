@@ -13,201 +13,105 @@ namespace MusicTheory.Features.Question
 {
     public interface ILessonRepository
     {
-        Lesson GetLesson(int id, int maxNumberOfQuestions);
-        List<Lesson> GetLessons();
-        void MergeLesson(Lesson lesson);
+        Lesson GetLesson(int lessonId, SqlConnection cnn, SqlTransaction t);
+        List<Lesson> GetLessons(SqlConnection cnn, SqlTransaction t);
+        int InsertLesson(string lessonName, SqlConnection cnn, SqlTransaction t);
+        int InsertQuestion(SqlConnection cnn, SqlTransaction t, QuestionModel question);
+        void InsertLessonQuestion(int lessonId, SqlConnection cnn, SqlTransaction t, int questionId);
+        int InsertTextOption(SqlConnection cnn, SqlTransaction t, string text);
+        void InsertQuestionOption(SqlConnection cnn, SqlTransaction t, int questionId, int textOptionId);
+        List<TextQuestionOption> GetOptionsForQuestion(SqlConnection cnn, SqlTransaction t, QuestionModel question);
+        IList<QuestionModel> GetQuestionsForLesson(int lessonId, int maxNumberOfQuestions, SqlConnection cnn, SqlTransaction t);
     }
     public class LessonRepository : ILessonRepository
     {
-        private readonly MusicTheoryConfiguration _config;
-        public LessonRepository(IOptions<MusicTheoryConfiguration> config)
+        public List<TextQuestionOption> GetOptionsForQuestion(SqlConnection cnn, SqlTransaction t, QuestionModel question)
         {
-            _config = config.Value;
-        }
-
-        public Lesson GetLesson(int lessonId, int maxNumberOfQuestions)
-        {
-            Lesson lesson;
-            IList<QuestionModel> questions;
-            using (var cnn = new SqlConnection(_config.ConnectionStrings.MusicTheoryConnectionString))
-            {
-                cnn.Open();
-
-                using(var t = cnn.BeginTransaction())
-                {
-                    var lessonSql = @"
-select * from Lessons
-where Id = @lessonId
-";
-
-                    lesson = cnn.Query<Lesson>(lessonSql, new { lessonId }, transaction: t).FirstOrDefault();
-
-                    var questionSql = @"
-select top (@maxNumberOfQuestions) Id, Text as QuestionText, AnswerOptionId as AnswerId from Questions
-where Id in (select QuestionId from LessonQuestions where LessonId = @lessonId)
-";
-                    questions = cnn.Query<QuestionModel>(questionSql, new { lessonId, maxNumberOfQuestions }, transaction: t).ToList();
-
-                    var textOptionsSql = @"
+            var textOptionsSql = @"
 select TextOptions.Id, TextOptions.Text from TextOptions 
 inner join QuestionOptions on TextOptions.Id = QuestionOptions.OptionId
 where QuestionOptions.QuestionId = @questionId
 ";
 
-                    foreach(var question in questions)
-                    {
-                        var options = cnn.Query<TextQuestionOption>(textOptionsSql, new { questionId = question.Id }, transaction: t).ToList();
-                        question.TextOptions = options;
-                    }
+            var options = cnn.Query<TextQuestionOption>(textOptionsSql, new { questionId = question.Id }, transaction: t).ToList();
+            return options;
+        }
 
-                    lesson.Questions = questions;
-                }
-            }
+        public IList<QuestionModel> GetQuestionsForLesson(int lessonId, int maxNumberOfQuestions, SqlConnection cnn, SqlTransaction t)
+        {
+            IList<QuestionModel> questions;
+            var questionSql = @"
+select top (@maxNumberOfQuestions) Id, Text as QuestionText, AnswerOptionId as AnswerId from Questions
+where Id in (select QuestionId from LessonQuestions where LessonId = @lessonId)
+";
+            questions = cnn.Query<QuestionModel>(questionSql, new { lessonId, maxNumberOfQuestions }, transaction: t).ToList();
+            return questions;
+        }
 
-            //var options = new List<TextQuestionOption> {
-            //    new TextQuestionOption {
-            //        Id = 1,
-            //        QuestionId = lessonId,
-            //        Text="Option1"
-            //    },
-            //    new TextQuestionOption {
-            //        Id = 2,
-            //        QuestionId = lessonId,
-            //        Text="Option2"
-            //    },
-            //    new TextQuestionOption {
-            //        Id = 3,
-            //        QuestionId = lessonId,
-            //        Text="Option3"
-            //    },
-            //    new TextQuestionOption {
-            //        Id = 4,
-            //        QuestionId = lessonId,
-            //        Text="Option4"
-            //    },
-            //};
+        public Lesson GetLesson(int lessonId, SqlConnection cnn, SqlTransaction t)
+        {
+            Lesson lesson;
+            var lessonSql = @"
+select * from Lessons
+where Id = @lessonId
+";
 
-            //var lesson = new Lesson
-            //{
-            //    Id = lessonId,
-            //    Name = "Major Scale",
-            //    Questions = new List<QuestionModel> {
-            //        new QuestionModel
-            //        {
-            //            Id = lessonId,
-            //            QuestionText = "This is the first question",
-            //            TextOptions = options,
-            //            AnswerId = 2
-            //        },
-            //        new QuestionModel
-            //        {
-            //            Id = lessonId,
-            //            QuestionText = "This is the second question",
-            //            TextOptions = options,
-            //            AnswerId = 3
-            //        },
-            //        new QuestionModel
-            //        {
-            //            Id = lessonId,
-            //            QuestionText = "This is the third question",
-            //            TextOptions = options,
-            //            AnswerId = 1
-            //        },
-            //        new QuestionModel
-            //        {
-            //            Id = lessonId,
-            //            QuestionText = "This is the fourth question",
-            //            TextOptions = options,
-            //            AnswerId = 3
-            //        },
-            //        new QuestionModel
-            //        {
-            //            Id = lessonId,
-            //            QuestionText = "This is the fifth question",
-            //            TextOptions = options,
-            //            AnswerId = 1
-            //        }
-            //    }
-            //};
-
+            lesson = cnn.Query<Lesson>(lessonSql, new { lessonId }, transaction: t).FirstOrDefault();
             return lesson;
         }
 
-        public List<Lesson> GetLessons()
+        public List<Lesson> GetLessons(SqlConnection cnn, SqlTransaction t)
         {
             List<Lesson> lessons;
-            using (var cnn = new SqlConnection(_config.ConnectionStrings.MusicTheoryConnectionString))
-            {
-                cnn.Open();
-
-                using (var t = cnn.BeginTransaction())
-                {
-                    var lessonSql = @"
+            var lessonSql = @"
 select * from Lessons
 ";
 
-                    lessons = cnn.Query<Lesson>(lessonSql,  transaction: t).ToList();
-                }
-            }
+            lessons = cnn.Query<Lesson>(lessonSql, transaction: t).ToList();
             return lessons;
         }
 
-        public void MergeLesson(Lesson lesson)
+        public int InsertLesson(string lessonName, SqlConnection cnn, SqlTransaction t)
         {
-            using (var cnn = new SqlConnection(_config.ConnectionStrings.MusicTheoryConnectionString))
-            {
-                cnn.Open();
-
-                using (var t = cnn.BeginTransaction())
-                {
-                    var lessonSql = @"
+            var lessonSql = @"
                  Insert into Lessons (Name) values (@name);
         SELECT CAST(SCOPE_IDENTITY() as int)";
-                  
-                  lesson.Id=  cnn.Query<int>(lessonSql, new {lesson.Name},t).Single();
 
-                    foreach (var question in lesson.Questions)
-                    {
+            return cnn.Query<int>(lessonSql, new { lessonName }, t).Single();
+        }
 
-                        var questionSql = @"
+        public int InsertQuestion(SqlConnection cnn, SqlTransaction t, QuestionModel question)
+        {
+            var questionSql = @"
 Insert into Questions(Text, AnswerOptionId, TypeId) values(@QuestionText, @AnswerId, @TypeId);
  SELECT CAST(SCOPE_IDENTITY() as int)
 ";
-                        question.Id = cnn.Query<int>(questionSql, new { question.QuestionText, question.AnswerId, question.TypeId }, t).Single();
+            return cnn.Query<int>(questionSql, new { question.QuestionText, question.AnswerId, question.TypeId }, t).Single();
+        }
 
-
-
-                        var lessonQuestionSql = @"
-Insert into LessonQuestions(LessonId, QuestionId) values(@lessonId,  @QuestionId);
+        public void InsertLessonQuestion(int lessonId, SqlConnection cnn, SqlTransaction t, int questionId)
+        {
+            var lessonQuestionSql = @"
+Insert into LessonQuestions(LessonId, QuestionId) values(@lessonId,  @questionId);
 ";
-                        cnn.Execute(lessonQuestionSql, new { lessonId = lesson.Id, QuestionId = question.Id }, t);
+            cnn.Execute(lessonQuestionSql, new { lessonId, questionId }, t);
+        }
 
-                        foreach (var textOption in question.TextOptions)
-                        {
-
-                            var textOptionSql = @"
-Insert into TextOptions(Text) values(@Text);
+        public int InsertTextOption(SqlConnection cnn, SqlTransaction t, string text)
+        {
+            var textOptionSql = @"
+Insert into TextOptions(Text) values(@text);
  SELECT CAST(SCOPE_IDENTITY() as int)
 ";
-                            textOption.Id = cnn.Query<int>(textOptionSql, new { textOption.Text }, t).Single();
+            return cnn.Query<int>(textOptionSql, new { text }, t).Single();
+        }
 
-
-
-                            var questionOptionsSql = @"
+        public void InsertQuestionOption(SqlConnection cnn, SqlTransaction t, int questionId, int textOptionId)
+        {
+            var questionOptionsSql = @"
 Insert into QuestionOptions(QuestionId, OptionId) values(@questionId,  @optionId);
 ";
-                            cnn.Execute(questionOptionsSql, new { questionId = question.Id, optionId = textOption.Id }, t);
-
-
-                        }
-
-                    }
-
-
-                    t.Commit();
-
-                }
-            }
+            cnn.Execute(questionOptionsSql, new { questionId, optionId = textOptionId }, t);
         }
     }
 }
