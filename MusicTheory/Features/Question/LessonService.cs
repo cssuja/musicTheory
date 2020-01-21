@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using MusicTheory.Configuration;
 using MusicTheory.Features.Question.Models;
@@ -91,7 +90,7 @@ namespace MusicTheory.Features.Question
 
                         foreach (var textOption in question.Options)
                         {
-                            textOption.Id = _repository.InsertTextOption(cnn, t, (string)textOption.Option);
+                            textOption.Id = _repository.InsertTextOption(cnn, t, textOption.Option.ToString());
 
                             _repository.InsertQuestionOption(cnn, t, question.Id, textOption);
                         }
