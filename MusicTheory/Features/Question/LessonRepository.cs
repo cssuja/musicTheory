@@ -19,7 +19,7 @@ namespace MusicTheory.Features.Question
         int InsertQuestion(SqlConnection cnn, SqlTransaction t, QuestionModel question);
         void InsertLessonQuestion(int lessonId, SqlConnection cnn, SqlTransaction t, int questionId);
         int InsertTextOption(SqlConnection cnn, SqlTransaction t, string text);
-        void InsertQuestionOption(SqlConnection cnn, SqlTransaction t, int questionId, int textOptionId);
+        void InsertQuestionOption(SqlConnection cnn, SqlTransaction t, int questionId, QuestionOption option);
         List<QuestionOption> GetOptionsForQuestion(SqlConnection cnn, SqlTransaction t, QuestionModel question);
         IList<QuestionModel> GetQuestionsForLesson(int lessonId, int maxNumberOfQuestions, SqlConnection cnn, SqlTransaction t);
         void UpdateQuestionCorrectAnswer(SqlConnection cnn, SqlTransaction t, int questionId, int answerId);
@@ -28,14 +28,8 @@ namespace MusicTheory.Features.Question
     {
         public List<QuestionOption> GetOptionsForQuestion(SqlConnection cnn, SqlTransaction t, QuestionModel question)
         {
-            var correctAnswerIdSql = @"
-select AnswerOptionId from Questions
-where Id = @questionId
-";
-            var answerId = cnn.Query<int>(correctAnswerIdSql, new { questionId = question.Id }, transaction: t).FirstOrDefault();
-
             var textOptionsSql = @"
-select TextOptions.Id, TextOptions.Text as ""Option"" from TextOptions 
+select TextOptions.Id, TextOptions.Text as ""Option"", QuestionOptions.IsCorrectAnswer from TextOptions 
 inner join QuestionOptions on TextOptions.Id = QuestionOptions.OptionId
 where QuestionOptions.QuestionId = @questionId
 ";
@@ -52,8 +46,6 @@ where QuestionOptions.QuestionId = @questionId
 
             var options = cnn.Query<QuestionOption>(sql, new { questionId = question.Id }, transaction: t).ToList();
 
-            options.FirstOrDefault(o => o.Id == answerId).IsCorrectAnswer = true;
-
             return options;
         }
 
@@ -61,7 +53,7 @@ where QuestionOptions.QuestionId = @questionId
         {
             IList<QuestionModel> questions;
             var questionSql = @"
-select top (@maxNumberOfQuestions) Id, Text as QuestionText, AnswerOptionId as AnswerId, TypeId from Questions
+select top (@maxNumberOfQuestions) Id, Text, TypeId from Questions
 where Id in (select QuestionId from LessonQuestions where LessonId = @lessonId)
 ";
             questions = cnn.Query<QuestionModel>(questionSql, new { lessonId, maxNumberOfQuestions }, transaction: t).ToList();
@@ -126,12 +118,12 @@ Insert into TextOptions(Text) values(@text);
             return cnn.Query<int>(textOptionSql, new { text }, t).Single();
         }
 
-        public void InsertQuestionOption(SqlConnection cnn, SqlTransaction t, int questionId, int textOptionId)
+        public void InsertQuestionOption(SqlConnection cnn, SqlTransaction t, int questionId, QuestionOption option)
         {
             var questionOptionsSql = @"
-Insert into QuestionOptions(QuestionId, OptionId) values(@questionId,  @optionId);
+Insert into QuestionOptions(QuestionId, OptionId, IsCorrectAnswer) values(@questionId,  @optionId, @optionIsCorrect);
 ";
-            cnn.Execute(questionOptionsSql, new { questionId, optionId = textOptionId }, t);
+            cnn.Execute(questionOptionsSql, new { questionId, optionId = option.Id, optionIsCorrect = option.IsCorrectAnswer }, t);
         }
 
         public void UpdateQuestionCorrectAnswer(SqlConnection cnn, SqlTransaction t, int questionId, int answerId)
