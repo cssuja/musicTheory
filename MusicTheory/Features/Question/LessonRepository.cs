@@ -22,6 +22,7 @@ namespace MusicTheory.Features.Question
         void InsertQuestionOption(SqlConnection cnn, SqlTransaction t, int questionId, int textOptionId);
         List<QuestionOption> GetOptionsForQuestion(SqlConnection cnn, SqlTransaction t, QuestionModel question);
         IList<QuestionModel> GetQuestionsForLesson(int lessonId, int maxNumberOfQuestions, SqlConnection cnn, SqlTransaction t);
+        void UpdateQuestionCorrectAnswer(SqlConnection cnn, SqlTransaction t, int questionId, int answerId);
     }
     public class LessonRepository : ILessonRepository
     {
@@ -93,7 +94,7 @@ select * from Lessons
         public int InsertLesson(string lessonName, SqlConnection cnn, SqlTransaction t)
         {
             var lessonSql = @"
-                 Insert into Lessons (Name) values (@name);
+                 Insert into Lessons (Name) values (@lessonName);
         SELECT CAST(SCOPE_IDENTITY() as int)";
 
             return cnn.Query<int>(lessonSql, new { lessonName }, t).Single();
@@ -102,10 +103,10 @@ select * from Lessons
         public int InsertQuestion(SqlConnection cnn, SqlTransaction t, QuestionModel question)
         {
             var questionSql = @"
-Insert into Questions(Text, TypeId) values(@QuestionText, @TypeId);
+Insert into Questions(Text, TypeId) values(@text, @TypeId);
  SELECT CAST(SCOPE_IDENTITY() as int)
 ";
-            return cnn.Query<int>(questionSql, new { question.QuestionText, question.TypeId }, t).Single();
+            return cnn.Query<int>(questionSql, new { question.Text, question.TypeId }, t).Single();
         }
 
         public void InsertLessonQuestion(int lessonId, SqlConnection cnn, SqlTransaction t, int questionId)
@@ -131,6 +132,15 @@ Insert into TextOptions(Text) values(@text);
 Insert into QuestionOptions(QuestionId, OptionId) values(@questionId,  @optionId);
 ";
             cnn.Execute(questionOptionsSql, new { questionId, optionId = textOptionId }, t);
+        }
+
+        public void UpdateQuestionCorrectAnswer(SqlConnection cnn, SqlTransaction t, int questionId, int answerId)
+        {
+            var questionOptionsSql = @"
+update Questions set AnswerOptionId = @answerId
+where Id = @questionId;
+";
+            cnn.Execute(questionOptionsSql, new { answerId, questionId }, t);
         }
     }
 }

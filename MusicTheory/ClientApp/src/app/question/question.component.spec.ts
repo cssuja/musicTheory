@@ -40,7 +40,7 @@ describe('QuestionComponent', () => {
         name: 'test',
         questions: <QuestionModel[]>[
           {
-            questionText: 'Which is the right answer?',
+            text: 'Which is the right answer?',
             options: <QuestionOption[]>[
               {
                 id: 1,
@@ -59,7 +59,7 @@ describe('QuestionComponent', () => {
       fixture.whenStable().then(() => {
         expect(mockQuestionService.getLesson).toHaveBeenCalledWith(expectedLessonId);
         const text = fixture.nativeElement.textContent;
-        expect(text).toContain(expectedLesson.questions[0].questionText);
+        expect(text).toContain(expectedLesson.questions[0].text);
         expect(text).toContain(expectedLesson.questions[0].options[0].option);
         expect(text).toContain(expectedLesson.questions[0].options[1].option);
       });

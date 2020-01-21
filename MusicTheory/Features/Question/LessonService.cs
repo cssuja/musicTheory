@@ -93,6 +93,11 @@ namespace MusicTheory.Features.Question
                         {
                             textOption.Id = _repository.InsertTextOption(cnn, t, (string)textOption.Option);
 
+                            if (textOption.IsCorrectAnswer)
+                            {
+                                _repository.UpdateQuestionCorrectAnswer(cnn, t, question.Id, textOption.Id);
+                            }
+
                             _repository.InsertQuestionOption(cnn, t, question.Id, textOption.Id);
                         }
                     }

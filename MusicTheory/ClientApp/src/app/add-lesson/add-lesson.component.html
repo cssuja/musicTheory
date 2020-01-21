@@ -21,18 +21,19 @@
   <div class="form-group">
     <label>Option</label>
     <input type="text"
-           [(ngModel)]="currentTextOption.option"
+           [(ngModel)]="currentOption.option"
            class="form-control"
-           name="currentTextOption.option">
+           name="currentOption.option">
   </div>
 
   <div class="form-check">
     <input class="form-check-input"
            type="checkbox"
            value=""
-           [(ngModel)]="currentOptionIsCorrect">
+           [(ngModel)]="currentOption.isCorrectAnswer"
+           name="currentOption.isCorrectAnswer">
     <label class="form-check-label">
-      Default checkbox
+      Is this the correct answer?
     </label>
   </div>
 

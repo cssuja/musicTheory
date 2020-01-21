@@ -30,7 +30,7 @@ namespace MusicTheory.Tests.Features.Question
                 Questions = new List<QuestionModel> {
                     new QuestionModel {
                         Id = 5,
-                        QuestionText = "This is the first question"
+                        Text = "This is the first question"
                     }
                 }
             };

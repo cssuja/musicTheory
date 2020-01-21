@@ -9,8 +9,7 @@ import { AddLessonService } from './add-lesson.service';
 export class AddLessonComponent implements OnInit {
   lesson: Lesson = {} as Lesson;
   currentQuestion: QuestionModel;
-  currentTextOption: QuestionOption;
-  currentOptionIsCorrect = false;
+  currentOption: QuestionOption;
   constructor(private addLessonService: AddLessonService) { }
 
   ngOnInit() {
@@ -31,7 +30,7 @@ export class AddLessonComponent implements OnInit {
   }
 
   initialiseCurrentTextOption() {
-    this.currentTextOption = {} as QuestionOption;
+    this.currentOption = {} as QuestionOption;
   }
 
   addQuestion() {
@@ -39,15 +38,17 @@ export class AddLessonComponent implements OnInit {
     this.initialiseCurrentQuestion();
   }
   addTextOption() {
-    this.currentQuestion.options = [...this.currentQuestion.options, this.currentTextOption];
+    console.log(JSON.stringify(this.currentOption));
+
+    this.currentQuestion.options = [...this.currentQuestion.options, this.currentOption];
     this.initialiseCurrentTextOption();
+    console.log(JSON.stringify(this.currentOption));
   }
 
   submit() {
-    console.log('submit');
+    console.log('submit', this.lesson);
     this.addLessonService.mergeLesson(this.lesson).subscribe();
     this.initialiseLesson();
-    console.log(this.lesson);
   }
 
 }
