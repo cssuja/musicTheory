@@ -43,7 +43,7 @@ namespace MusicTheory.Features.Question
 
                     foreach (var question in questions)
                     {
-                        question.TextOptions = _repository.GetOptionsForQuestion(cnn, t, question);
+                        question.Options = _repository.GetOptionsForQuestion(cnn, t, question);
                     }
 
                     lesson.Questions = questions;
@@ -53,7 +53,7 @@ namespace MusicTheory.Features.Question
             lesson.Questions= lesson.Questions.OrderBy(q => random.Next()).ToList();
             foreach(var question in lesson.Questions)
             {
-                question.TextOptions = question.TextOptions.OrderBy(q => random.Next()).ToList();
+                question.Options = question.Options.OrderBy(q => random.Next()).ToList();
             }
             return lesson ;
         }
@@ -89,9 +89,9 @@ namespace MusicTheory.Features.Question
 
                         _repository.InsertLessonQuestion(lesson.Id, cnn, t, question.Id);
 
-                        foreach (var textOption in question.TextOptions)
+                        foreach (var textOption in question.Options)
                         {
-                            textOption.Id = _repository.InsertTextOption(cnn, t, textOption.Text);
+                            textOption.Id = _repository.InsertTextOption(cnn, t, (string)textOption.Option);
 
                             _repository.InsertQuestionOption(cnn, t, question.Id, textOption.Id);
                         }

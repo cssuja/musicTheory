@@ -44,11 +44,11 @@ describe('QuestionComponent', () => {
             options: <QuestionOption[]>[
               {
                 id: 1,
-                text: 'some text 1',
+                option: 'some text 1',
               },
               {
                 id: 2,
-                text: 'some text 2',
+                option: 'some text 2',
               }
             ]
           }
@@ -60,8 +60,8 @@ describe('QuestionComponent', () => {
         expect(mockQuestionService.getLesson).toHaveBeenCalledWith(expectedLessonId);
         const text = fixture.nativeElement.textContent;
         expect(text).toContain(expectedLesson.questions[0].questionText);
-        expect(text).toContain(expectedLesson.questions[0].options[0].text);
-        expect(text).toContain(expectedLesson.questions[0].options[1].text);
+        expect(text).toContain(expectedLesson.questions[0].options[0].option);
+        expect(text).toContain(expectedLesson.questions[0].options[1].option);
       });
     }));
   });

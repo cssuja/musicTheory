@@ -16,14 +16,14 @@
            name="currentQuestion.text">
   </div>
 
-  {{currentQuestion.textOptions | json}}
+  {{currentQuestion.options | json}}
 
   <div class="form-group">
     <label>Option</label>
     <input type="text"
-           [(ngModel)]="currentTextOption.text"
+           [(ngModel)]="currentTextOption.option"
            class="form-control"
-           name="currentTextOption.text">
+           name="currentTextOption.option">
   </div>
 
   <div class="form-check">

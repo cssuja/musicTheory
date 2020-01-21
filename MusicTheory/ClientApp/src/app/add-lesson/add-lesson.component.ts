@@ -9,7 +9,7 @@ import { AddLessonService } from './add-lesson.service';
 export class AddLessonComponent implements OnInit {
   lesson: Lesson = {} as Lesson;
   currentQuestion: QuestionModel;
-  currentTextOption: TextQuestionOption;
+  currentTextOption: QuestionOption;
   currentOptionIsCorrect = false;
   constructor(private addLessonService: AddLessonService) { }
 
@@ -26,12 +26,12 @@ export class AddLessonComponent implements OnInit {
 
   initialiseCurrentQuestion() {
     this.currentQuestion = {} as QuestionModel;
-    this.currentQuestion.textOptions = [];
+    this.currentQuestion.options = [];
     this.currentQuestion.typeId = 1;
   }
 
   initialiseCurrentTextOption() {
-    this.currentTextOption = {} as TextQuestionOption;
+    this.currentTextOption = {} as QuestionOption;
   }
 
   addQuestion() {
@@ -39,7 +39,7 @@ export class AddLessonComponent implements OnInit {
     this.initialiseCurrentQuestion();
   }
   addTextOption() {
-    this.currentQuestion.textOptions = [...this.currentQuestion.textOptions, this.currentTextOption];
+    this.currentQuestion.options = [...this.currentQuestion.options, this.currentTextOption];
     this.initialiseCurrentTextOption();
   }
 

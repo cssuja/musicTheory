@@ -27,7 +27,7 @@ export class QuestionComponent implements OnInit {
   }
 
   get correctAnswer() {
-    return this.currentQuestion.textOptions.filter(x => x.id === this.currentQuestion.answerId)[0];
+    return this.currentQuestion.options.filter(x => x.id === this.currentQuestion.answerId)[0];
   }
 
   constructor(private route: ActivatedRoute,

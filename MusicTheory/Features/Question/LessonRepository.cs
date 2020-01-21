@@ -20,20 +20,30 @@ namespace MusicTheory.Features.Question
         void InsertLessonQuestion(int lessonId, SqlConnection cnn, SqlTransaction t, int questionId);
         int InsertTextOption(SqlConnection cnn, SqlTransaction t, string text);
         void InsertQuestionOption(SqlConnection cnn, SqlTransaction t, int questionId, int textOptionId);
-        List<TextQuestionOption> GetOptionsForQuestion(SqlConnection cnn, SqlTransaction t, QuestionModel question);
+        List<QuestionOption> GetOptionsForQuestion(SqlConnection cnn, SqlTransaction t, QuestionModel question);
         IList<QuestionModel> GetQuestionsForLesson(int lessonId, int maxNumberOfQuestions, SqlConnection cnn, SqlTransaction t);
     }
     public class LessonRepository : ILessonRepository
     {
-        public List<TextQuestionOption> GetOptionsForQuestion(SqlConnection cnn, SqlTransaction t, QuestionModel question)
+        public List<QuestionOption> GetOptionsForQuestion(SqlConnection cnn, SqlTransaction t, QuestionModel question)
         {
             var textOptionsSql = @"
-select TextOptions.Id, TextOptions.Text from TextOptions 
+select TextOptions.Id, TextOptions.Text as ""Option"" from TextOptions 
 inner join QuestionOptions on TextOptions.Id = QuestionOptions.OptionId
 where QuestionOptions.QuestionId = @questionId
 ";
+            string sql = "";
 
-            var options = cnn.Query<TextQuestionOption>(textOptionsSql, new { questionId = question.Id }, transaction: t).ToList();
+            switch (question.TypeId)
+            {
+                case 1:
+                    {
+                        sql = textOptionsSql;
+                        break;
+                    }
+            }
+
+            var options = cnn.Query<QuestionOption>(sql, new { questionId = question.Id }, transaction: t).ToList();
             return options;
         }
 
@@ -41,7 +51,7 @@ where QuestionOptions.QuestionId = @questionId
         {
             IList<QuestionModel> questions;
             var questionSql = @"
-select top (@maxNumberOfQuestions) Id, Text as QuestionText, AnswerOptionId as AnswerId from Questions
+select top (@maxNumberOfQuestions) Id, Text as QuestionText, AnswerOptionId as AnswerId, TypeId from Questions
 where Id in (select QuestionId from LessonQuestions where LessonId = @lessonId)
 ";
             questions = cnn.Query<QuestionModel>(questionSql, new { lessonId, maxNumberOfQuestions }, transaction: t).ToList();

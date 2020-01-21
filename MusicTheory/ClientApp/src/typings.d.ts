@@ -2,23 +2,14 @@ interface QuestionModel {
     id: number;
     questionText: string;
     answerId: number;
-    textOptions: TextQuestionOption[];
-    imageOptions: ImageQuestionOption[];
+    options: QuestionOption[];
     answeredCorrectly: boolean;
     typeId: number;
 }
 
-interface IQuestionOption {
+interface QuestionOption {
     id: number;
-    questionId: number;
-}
-
-interface TextQuestionOption extends IQuestionOption {
-    text: string;
-}
-
-interface ImageQuestionOption extends IQuestionOption {
-    image: Blob;
+    option: any;
 }
 
 interface Lesson {

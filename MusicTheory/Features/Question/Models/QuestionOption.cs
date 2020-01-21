@@ -5,18 +5,9 @@ using System.Threading.Tasks;
 
 namespace MusicTheory.Features.Question.Models
 {
-    public interface IQuestionOption
+    public class QuestionOption
     {
         public int Id { get; set; }
-    }
-    public class TextQuestionOption :  IQuestionOption
-    {
-        public int Id { get; set; }
-        public string Text { get; set; }
-    }
-    public class ImageQuestionOption : IQuestionOption
-    {
-        public int Id { get; set; }
-        public byte[] Image { get; set; }
+        public object Option { get; set; }
     }
 }
