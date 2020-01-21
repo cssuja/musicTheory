@@ -23,11 +23,11 @@ export class QuestionComponent implements OnInit {
   }
 
   get isAnswerCorrect() {
-    return this.currentQuestion.answerId === this.selectedOptionId;
+    return this.correctAnswer.id === this.selectedOptionId;
   }
 
   get correctAnswer() {
-    return this.currentQuestion.options.filter(x => x.id === this.currentQuestion.answerId)[0];
+    return this.currentQuestion.options.filter(x => x.isCorrectAnswer)[0];
   }
 
   constructor(private route: ActivatedRoute,

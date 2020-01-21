@@ -27,6 +27,12 @@ namespace MusicTheory.Features.Question
     {
         public List<QuestionOption> GetOptionsForQuestion(SqlConnection cnn, SqlTransaction t, QuestionModel question)
         {
+            var correctAnswerIdSql = @"
+select AnswerOptionId from Questions
+where Id = @questionId
+";
+            var answerId = cnn.Query<int>(correctAnswerIdSql, new { questionId = question.Id }, transaction: t).FirstOrDefault();
+
             var textOptionsSql = @"
 select TextOptions.Id, TextOptions.Text as ""Option"" from TextOptions 
 inner join QuestionOptions on TextOptions.Id = QuestionOptions.OptionId
@@ -44,6 +50,9 @@ where QuestionOptions.QuestionId = @questionId
             }
 
             var options = cnn.Query<QuestionOption>(sql, new { questionId = question.Id }, transaction: t).ToList();
+
+            options.FirstOrDefault(o => o.Id == answerId).IsCorrectAnswer = true;
+
             return options;
         }
 
@@ -93,10 +102,10 @@ select * from Lessons
         public int InsertQuestion(SqlConnection cnn, SqlTransaction t, QuestionModel question)
         {
             var questionSql = @"
-Insert into Questions(Text, AnswerOptionId, TypeId) values(@QuestionText, @AnswerId, @TypeId);
+Insert into Questions(Text, TypeId) values(@QuestionText, @TypeId);
  SELECT CAST(SCOPE_IDENTITY() as int)
 ";
-            return cnn.Query<int>(questionSql, new { question.QuestionText, question.AnswerId, question.TypeId }, t).Single();
+            return cnn.Query<int>(questionSql, new { question.QuestionText, question.TypeId }, t).Single();
         }
 
         public void InsertLessonQuestion(int lessonId, SqlConnection cnn, SqlTransaction t, int questionId)

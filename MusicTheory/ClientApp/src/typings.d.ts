@@ -1,7 +1,6 @@
 interface QuestionModel {
     id: number;
     questionText: string;
-    answerId: number;
     options: QuestionOption[];
     answeredCorrectly: boolean;
     typeId: number;
@@ -10,6 +9,8 @@ interface QuestionModel {
 interface QuestionOption {
     id: number;
     option: any;
+    isCorrectAnswer: boolean;
+
 }
 
 interface Lesson {
