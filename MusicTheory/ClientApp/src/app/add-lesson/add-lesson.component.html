@@ -8,42 +8,78 @@
   </div>
   {{lesson.questions | json}}
 
-  <div class="form-group">
-    <label>Question Text</label>
-    <input type="text"
-           [(ngModel)]="currentQuestion.text"
-           class="form-control"
-           name="currentQuestion.text">
+  <div class="col-11 offset-1">
+    <div class="form-group">
+      <label>Question Text</label>
+      <input type="text"
+             [(ngModel)]="currentQuestion.text"
+             class="form-control"
+             name="currentQuestion.text">
+    </div>
+
+    <div class="col-10 offset-1">
+      <div *ngFor="let option of currentQuestion.options; index as i"
+           class="row">
+        <div class="col-10">
+          <input type="text"
+                 [(ngModel)]="currentQuestion.options[i].option"
+                 class="form-control"
+                 name="currentQuestion.options[{{i}}]">
+        </div>
+
+        <div class="col-2">
+          <div class="form-check">
+            <input class="form-check-input"
+                   type="checkbox"
+                   value=""
+                   [(ngModel)]="currentQuestion.options[i].isCorrectAnswer"
+                   name="currentQuestion.options[{{i}}].isCorrectAnswer">
+            <label class="form-check-label">
+              Is this the correct answer?
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-10">
+
+          <div class="form-group">
+            <label>Option</label>
+            <input type="text"
+                   [(ngModel)]="currentOption.option"
+                   class="form-control"
+                   name="currentOption.option">
+          </div>
+        </div>
+        <div class="col-2">
+
+          <div class="form-check">
+            <input class="form-check-input"
+                   type="checkbox"
+                   value=""
+                   [(ngModel)]="currentOption.isCorrectAnswer"
+                   name="currentOption.isCorrectAnswer">
+            <label class="form-check-label">
+              Is this the correct answer?
+            </label>
+          </div>
+        </div>
+      </div>
+
+
+
+
+      <button type="button"
+              class="btn btn-primary"
+              (click)="addTextOption()">Add Option</button>
+    </div>
+
+    <button type="button"
+            class="btn btn-primary"
+            (click)="addQuestion()">Add Question</button>
+
   </div>
-
-  {{currentQuestion.options | json}}
-
-  <div class="form-group">
-    <label>Option</label>
-    <input type="text"
-           [(ngModel)]="currentOption.option"
-           class="form-control"
-           name="currentOption.option">
-  </div>
-
-  <div class="form-check">
-    <input class="form-check-input"
-           type="checkbox"
-           value=""
-           [(ngModel)]="currentOption.isCorrectAnswer"
-           name="currentOption.isCorrectAnswer">
-    <label class="form-check-label">
-      Is this the correct answer?
-    </label>
-  </div>
-
-  <button type="button"
-          class="btn btn-primary"
-          (click)="addTextOption()">Add Option</button>
-
-  <button type="button"
-          class="btn btn-primary"
-          (click)="addQuestion()">Add Question</button>
 
   <button type="submit"
           class="btn btn-primary"
