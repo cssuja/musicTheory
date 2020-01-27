@@ -22,7 +22,6 @@ namespace MusicTheory.Features.Question
         void InsertQuestionOption(SqlConnection cnn, SqlTransaction t, int questionId, QuestionOption option);
         List<QuestionOption> GetOptionsForQuestion(SqlConnection cnn, SqlTransaction t, QuestionModel question);
         IList<QuestionModel> GetQuestionsForLesson(int lessonId, int maxNumberOfQuestions, SqlConnection cnn, SqlTransaction t);
-        void UpdateQuestionCorrectAnswer(SqlConnection cnn, SqlTransaction t, int questionId, int answerId);
     }
     public class LessonRepository : ILessonRepository
     {
@@ -124,15 +123,6 @@ Insert into TextOptions(Text) values(@text);
 Insert into QuestionOptions(QuestionId, OptionId, IsCorrectAnswer) values(@questionId,  @optionId, @optionIsCorrect);
 ";
             cnn.Execute(questionOptionsSql, new { questionId, optionId = option.Id, optionIsCorrect = option.IsCorrectAnswer }, t);
-        }
-
-        public void UpdateQuestionCorrectAnswer(SqlConnection cnn, SqlTransaction t, int questionId, int answerId)
-        {
-            var questionOptionsSql = @"
-update Questions set AnswerOptionId = @answerId
-where Id = @questionId;
-";
-            cnn.Execute(questionOptionsSql, new { answerId, questionId }, t);
         }
     }
 }
