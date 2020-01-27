@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MusicTheory.Features.Question;
-using MusicTheory.Features.Question.Models;
+using MusicTheory.Features.LessonFeature;
+using MusicTheory.Features.LessonFeature.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

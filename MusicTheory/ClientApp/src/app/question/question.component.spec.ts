@@ -38,7 +38,7 @@ describe('QuestionComponent', () => {
       const expectedLesson = <Lesson>{
         id: expectedLessonId,
         name: 'test',
-        questions: <QuestionModel[]>[
+        questions: <Question[]>[
           {
             text: 'Which is the right answer?',
             options: <QuestionOption[]>[

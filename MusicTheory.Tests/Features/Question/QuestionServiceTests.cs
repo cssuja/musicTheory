@@ -27,8 +27,8 @@ namespace MusicTheory.Tests.Features.Question
             {
                 Id = 2,
                 Name = "Major Scale",
-                Questions = new List<QuestionModel> {
-                    new QuestionModel {
+                Questions = new List<MusicTheory.Features.Question.Models.Question> {
+                    new MusicTheory.Features.Question.Models.Question {
                         Id = 5,
                         Text = "This is the first question"
                     }

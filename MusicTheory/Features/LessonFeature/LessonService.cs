@@ -4,9 +4,9 @@ using System.Data.SqlClient;
 using System.Linq;
 using Microsoft.Extensions.Options;
 using MusicTheory.Configuration;
-using MusicTheory.Features.Question.Models;
+using MusicTheory.Features.LessonFeature.Models;
 
-namespace MusicTheory.Features.Question
+namespace MusicTheory.Features.LessonFeature
 {
     public interface ILessonService
     {

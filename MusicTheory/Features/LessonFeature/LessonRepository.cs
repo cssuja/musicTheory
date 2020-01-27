@@ -2,30 +2,30 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using MusicTheory.Configuration;
-using MusicTheory.Features.Question.Models;
+using MusicTheory.Features.LessonFeature.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MusicTheory.Features.Question
+namespace MusicTheory.Features.LessonFeature
 {
     public interface ILessonRepository
     {
         Lesson GetLesson(int lessonId, SqlConnection cnn, SqlTransaction t);
         List<Lesson> GetLessons(SqlConnection cnn, SqlTransaction t);
         int InsertLesson(string lessonName, SqlConnection cnn, SqlTransaction t);
-        int InsertQuestion(SqlConnection cnn, SqlTransaction t, QuestionModel question);
+        int InsertQuestion(SqlConnection cnn, SqlTransaction t, Question question);
         void InsertLessonQuestion(int lessonId, SqlConnection cnn, SqlTransaction t, int questionId);
         int InsertTextOption(SqlConnection cnn, SqlTransaction t, string text);
         void InsertQuestionOption(SqlConnection cnn, SqlTransaction t, int questionId, QuestionOption option);
-        List<QuestionOption> GetOptionsForQuestion(SqlConnection cnn, SqlTransaction t, QuestionModel question);
-        IList<QuestionModel> GetQuestionsForLesson(int lessonId, int maxNumberOfQuestions, SqlConnection cnn, SqlTransaction t);
+        List<QuestionOption> GetOptionsForQuestion(SqlConnection cnn, SqlTransaction t, Question question);
+        IList<Models.Question> GetQuestionsForLesson(int lessonId, int maxNumberOfQuestions, SqlConnection cnn, SqlTransaction t);
     }
     public class LessonRepository : ILessonRepository
     {
-        public List<QuestionOption> GetOptionsForQuestion(SqlConnection cnn, SqlTransaction t, QuestionModel question)
+        public List<QuestionOption> GetOptionsForQuestion(SqlConnection cnn, SqlTransaction t, Models.Question question)
         {
             var textOptionsSql = @"
 select TextOptions.Id, TextOptions.Text as ""Option"", QuestionOptions.IsCorrectAnswer from TextOptions 
@@ -48,14 +48,14 @@ where QuestionOptions.QuestionId = @questionId
             return options;
         }
 
-        public IList<QuestionModel> GetQuestionsForLesson(int lessonId, int maxNumberOfQuestions, SqlConnection cnn, SqlTransaction t)
+        public IList<Question> GetQuestionsForLesson(int lessonId, int maxNumberOfQuestions, SqlConnection cnn, SqlTransaction t)
         {
-            IList<QuestionModel> questions;
+            IList<Models.Question> questions;
             var questionSql = @"
 select top (@maxNumberOfQuestions) Id, Text, TypeId from Questions
 where Id in (select QuestionId from LessonQuestions where LessonId = @lessonId)
 ";
-            questions = cnn.Query<QuestionModel>(questionSql, new { lessonId, maxNumberOfQuestions }, transaction: t).ToList();
+            questions = cnn.Query<Question>(questionSql, new { lessonId, maxNumberOfQuestions }, transaction: t).ToList();
             return questions;
         }
 
@@ -91,7 +91,7 @@ select * from Lessons
             return cnn.Query<int>(lessonSql, new { lessonName }, t).Single();
         }
 
-        public int InsertQuestion(SqlConnection cnn, SqlTransaction t, QuestionModel question)
+        public int InsertQuestion(SqlConnection cnn, SqlTransaction t, Models.Question question)
         {
             var questionSql = @"
 Insert into Questions(Text, TypeId) values(@text, @TypeId);

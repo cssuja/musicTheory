@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MusicTheory.Configuration;
-using MusicTheory.Features.Question;
+using MusicTheory.Features.LessonFeature;
 
 namespace MusicTheory
 {

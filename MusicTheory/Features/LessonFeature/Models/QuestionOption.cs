@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MusicTheory.Features.Question.Models
+namespace MusicTheory.Features.LessonFeature.Models
 {
     public class QuestionOption
     {

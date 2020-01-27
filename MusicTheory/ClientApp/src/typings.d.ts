@@ -1,4 +1,4 @@
-interface QuestionModel {
+interface Question {
     id: number;
     text: string;
     options: QuestionOption[];
@@ -15,5 +15,5 @@ interface QuestionOption {
 interface Lesson {
     id: number;
     name: string;
-    questions: QuestionModel[]
+    questions: Question[]
 }

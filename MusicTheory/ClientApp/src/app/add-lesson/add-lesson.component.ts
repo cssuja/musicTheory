@@ -8,7 +8,7 @@ import { AddLessonService } from './add-lesson.service';
 })
 export class AddLessonComponent implements OnInit {
   lesson: Lesson = {} as Lesson;
-  currentQuestion: QuestionModel;
+  currentQuestion: Question;
   currentOption: QuestionOption;
   constructor(private addLessonService: AddLessonService) { }
 
@@ -24,7 +24,7 @@ export class AddLessonComponent implements OnInit {
   }
 
   initialiseCurrentQuestion() {
-    this.currentQuestion = {} as QuestionModel;
+    this.currentQuestion = {} as Question;
     this.currentQuestion.options = [];
     this.currentQuestion.typeId = 1;
   }

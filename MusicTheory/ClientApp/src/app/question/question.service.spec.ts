@@ -2,9 +2,9 @@ import { TestBed } from '@angular/core/testing';
 
 import { QuestionService } from './question.service';
 import {
-   HttpClientTestingModule,
+    HttpClientTestingModule,
     HttpTestingController
-} from '@angular/common/http/testing'
+} from '@angular/common/http/testing';
 import { log } from 'util';
 
 describe('QuestionService', () => {
@@ -21,8 +21,8 @@ describe('QuestionService', () => {
     });
 
     it('should be created', () => {
-      const service: QuestionService = TestBed.get(QuestionService);
-      expect(service).toBeTruthy();
+        const service: QuestionService = TestBed.get(QuestionService);
+        expect(service).toBeTruthy();
     });
 
     describe('getLesson', () => {
@@ -30,10 +30,10 @@ describe('QuestionService', () => {
             const service: QuestionService = TestBed.get(QuestionService);
             const id = 3;
             const expectedLesson = <Lesson>{
-                id : id,
+                id: id,
                 name: 'A Name',
                 questions: [
-                    <QuestionModel>{
+                    <Question>{
 
                     }
                 ]
