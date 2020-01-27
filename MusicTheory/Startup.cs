@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MusicTheory.Configuration;
 using MusicTheory.Features.LessonFeature;
+using MusicTheory.Features.LessonFeature.OptionFeature;
 
 namespace MusicTheory
 {
@@ -38,6 +39,7 @@ namespace MusicTheory
             });
             services.AddScoped<ILessonService, LessonService>();
             services.AddScoped<ILessonRepository, LessonRepository>();
+            services.AddScoped<IOptionRepositoryFactory, OptionRepositoryFactory>();
 
         }
 

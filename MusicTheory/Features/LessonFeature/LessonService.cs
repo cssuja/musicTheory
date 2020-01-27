@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.Extensions.Options;
 using MusicTheory.Configuration;
 using MusicTheory.Features.LessonFeature.Models;
+using MusicTheory.Features.LessonFeature.OptionFeature;
 
 namespace MusicTheory.Features.LessonFeature
 {
@@ -18,11 +19,13 @@ namespace MusicTheory.Features.LessonFeature
     {
         private readonly ILessonRepository _repository;
         private readonly MusicTheoryConfiguration _config;
+        private readonly IOptionRepositoryFactory _optionRepositoryFactory;
 
-        public LessonService(ILessonRepository repository, IOptions<MusicTheoryConfiguration> config)
+        public LessonService(ILessonRepository repository, IOptions<MusicTheoryConfiguration> config, IOptionRepositoryFactory optionRepositoryFactory )
         {
             _repository = repository;
             _config = config.Value;
+            _optionRepositoryFactory = optionRepositoryFactory;
         }
         public Lesson GetLesson(int id, int maxNumberOfQuestions)
         {
@@ -42,7 +45,7 @@ namespace MusicTheory.Features.LessonFeature
 
                     foreach (var question in questions)
                     {
-                        question.Options = _repository.GetOptionsForQuestion(cnn, t, question);
+                        question.Options = _optionRepositoryFactory.CreateRepository(question.TypeId).GetOptionsForQuestion(cnn, t, question);
                     }
 
                     lesson.Questions = questions;
@@ -90,7 +93,7 @@ namespace MusicTheory.Features.LessonFeature
 
                         foreach (var textOption in question.Options)
                         {
-                            textOption.Id = _repository.InsertTextOption(cnn, t, textOption.Option.ToString());
+                            textOption.Id = _optionRepositoryFactory.CreateRepository(question.TypeId).InsertOption(cnn, t, textOption.Option.ToString());
 
                             _repository.InsertQuestionOption(cnn, t, question.Id, textOption);
                         }
