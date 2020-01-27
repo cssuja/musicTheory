@@ -51,4 +51,7 @@ export class AddLessonComponent implements OnInit {
     this.initialiseLesson();
   }
 
+  onSelect(event) {
+    console.log(this.currentOption, event);
+  }
 }

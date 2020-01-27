@@ -18,7 +18,14 @@
     </div>
 
     <div class="col-10 offset-1">
-      <div *ngFor="let option of currentQuestion.options; index as i"
+      <select class="form-control"
+              (change)="onSelect($event)">
+        <option [value]="option.id || guid()"
+                *ngFor="let option of currentQuestion.options; index as i">
+          {{currentQuestion.options[i].option}} {{currentQuestion.options[i].isCorrectAnswer}}
+        </option>
+      </select>
+      <!-- <div *ngFor="let option of currentQuestion.options; index as i"
            class="row">
         <div class="col-10">
           <input type="text"
@@ -39,7 +46,7 @@
             </label>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <div class="row">
         <div class="col-10">
