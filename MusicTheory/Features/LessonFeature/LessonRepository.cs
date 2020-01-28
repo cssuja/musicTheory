@@ -24,11 +24,9 @@ namespace MusicTheory.Features.LessonFeature
     }
     public class LessonRepository : ILessonRepository
     {
-
-
         public IList<Question> GetQuestionsForLesson(int lessonId, int maxNumberOfQuestions, SqlConnection cnn, SqlTransaction t)
         {
-            IList<Models.Question> questions;
+            IList<Question> questions;
             var questionSql = @"
 select top (@maxNumberOfQuestions) Id, Text from Questions
 where Id in (select QuestionId from LessonQuestions where LessonId = @lessonId)

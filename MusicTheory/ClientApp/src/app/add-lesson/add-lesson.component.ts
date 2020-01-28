@@ -12,8 +12,8 @@ import { switchMap, finalize } from 'rxjs/operators';
 export class AddLessonComponent implements OnInit {
   lessons: Lesson[] = [];
   currentLesson: Lesson = {} as Lesson;
-  currentQuestion: Question;
-  currentOption: QuestionOption;
+  currentQuestion: Question = {} as Question;
+  currentOption: QuestionOption = {} as QuestionOption;
   message: string;
   constructor(private addLessonService: AddLessonService,
     private lessonService: LessonsService,
@@ -113,6 +113,14 @@ export class AddLessonComponent implements OnInit {
   }
 
   onQuestionSelect(event) {
-    this.currentQuestion = this.currentLesson.questions.filter(q => q.id === event.target.value)[0];
+    this.currentQuestion = this.currentLesson.questions.filter(q => q.id.toString() === event.target.value)[0];
+  }
+
+  addOption() {
+
+  }
+
+  onOptionSelect(event) {
+    this.currentOption = this.currentQuestion.options.filter(o => o.id.toString() === event.target.value)[0];
   }
 }

@@ -58,100 +58,32 @@
             class="btn btn-primary"
             (click)="addQuestion()">Save Question</button>
   </div>
+  <br />
+  <div>
+    <label>Options</label>
+
+    <select class="form-control"
+            (change)="onOptionSelect($event)">
+      <option value="">Select Existing</option>
+      <option [value]="option.id"
+              *ngFor="let option of currentQuestion.options">
+        {{option.option.toString()}}
+      </option>
+    </select>
 
 
+    <br />
 
-
-
-
-
-
-
-
-
-
-  <div class="col-11 offset-1">
     <div class="form-group">
-      <label>Question Text</label>
+
       <input type="text"
-             [(ngModel)]="currentQuestion.text"
+             [(ngModel)]="currentOption.option"
              class="form-control"
-             name="currentQuestion.text">
-    </div>
-
-    <div class="col-10 offset-1">
-      <select class="form-control"
-              (change)="onSelect($event)">
-        <option [value]="option.id || guid()"
-                *ngFor="let option of currentQuestion.options; index as i">
-          {{currentQuestion.options[i].option}} {{currentQuestion.options[i].isCorrectAnswer}}
-        </option>
-      </select>
-      <!-- <div *ngFor="let option of currentQuestion.options; index as i"
-           class="row">
-        <div class="col-10">
-          <input type="text"
-                 [(ngModel)]="currentQuestion.options[i].option"
-                 class="form-control"
-                 name="currentQuestion.options[{{i}}]">
-        </div>
-
-        <div class="col-2">
-          <div class="form-check">
-            <input class="form-check-input"
-                   type="checkbox"
-                   value=""
-                   [(ngModel)]="currentQuestion.options[i].isCorrectAnswer"
-                   name="currentQuestion.options[{{i}}].isCorrectAnswer">
-            <label class="form-check-label">
-              Is this the correct answer?
-            </label>
-          </div>
-        </div>
-      </div> -->
-
-      <div class="row">
-        <div class="col-10">
-
-          <div class="form-group">
-            <label>Option</label>
-            <input type="text"
-                   [(ngModel)]="currentOption.option"
-                   class="form-control"
-                   name="currentOption.option">
-          </div>
-        </div>
-        <div class="col-2">
-
-          <div class="form-check">
-            <input class="form-check-input"
-                   type="checkbox"
-                   value=""
-                   [(ngModel)]="currentOption.isCorrectAnswer"
-                   name="currentOption.isCorrectAnswer">
-            <label class="form-check-label">
-              Is this the correct answer?
-            </label>
-          </div>
-        </div>
-      </div>
-
-
-
-
-      <button type="button"
-              class="btn btn-primary"
-              (click)="addTextOption()">Add Option</button>
+             name="currentOption.option"
+             placeholder="Add New">
     </div>
 
     <button type="button"
             class="btn btn-primary"
-            (click)="addQuestion()">Add Question</button>
-
+            (click)="addOption()">Save Option</button>
   </div>
-
-</form>
-
-{{currentLesson | json}}
-<br>
-{{lessonForm.value | json}}
