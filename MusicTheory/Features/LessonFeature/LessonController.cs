@@ -42,16 +42,16 @@ namespace MusicTheory.Controllers
         //    return _service.InsertLesson(lesson);
         //}
 
-        [HttpPost("Question")]
-        public int Post([FromBody] Question question, [FromQuery] int lessonId)
+        [HttpPut("Question")]
+        public int Put([FromBody] Question question, [FromQuery] int lessonId)
         {
-            return _service.InsertQuestion(question, lessonId);
+            return _service.MergeQuestion(question, lessonId);
         }
 
-        [HttpPost("Option")]
-        public int Post([FromBody] QuestionOption option)
+        [HttpPut("Option")]
+        public int Put([FromBody] QuestionOption option, [FromQuery] int questionId)
         {
-            return _service.InsertOption(option);
+            return _service.MergeOption(option, questionId);
         }
 
     }

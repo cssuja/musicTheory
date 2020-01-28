@@ -20,7 +20,7 @@ export class AddLessonComponent implements OnInit {
     private questionService: QuestionService) { }
 
   ngOnInit() {
-    this.initialiseLesson();
+    this.initialiseCurrentLesson();
     this.getLessons();
 
   }
@@ -31,35 +31,28 @@ export class AddLessonComponent implements OnInit {
     });
   }
 
-  initialiseLesson() {
+  initialiseCurrentLesson() {
     this.currentLesson = {} as Lesson;
     this.currentLesson.questions = [];
     this.initialiseCurrentQuestion();
-    this.initialiseCurrentTextOption();
+    this.initialiseCurrentOption();
   }
 
   initialiseCurrentQuestion() {
     this.currentQuestion = {} as Question;
     this.currentQuestion.options = [];
     this.currentQuestion.typeId = 1;
+    this.initialiseCurrentOption();
   }
 
-  initialiseCurrentTextOption() {
+  initialiseCurrentOption() {
     this.currentOption = {} as QuestionOption;
   }
 
-  addTextOption() {
-    console.log(JSON.stringify(this.currentOption));
-
-    this.currentQuestion.options = [...this.currentQuestion.options, this.currentOption];
-    this.initialiseCurrentTextOption();
-    console.log(JSON.stringify(this.currentOption));
-  }
-
   saveLesson() {
-    this.addLessonService.mergeLesson(this.currentLesson).pipe(
+    this.addLessonService.saveLesson(this.currentLesson).pipe(
       switchMap(id => this.questionService.getLesson(id)),
-      finalize(() => this.initialiseCurrentQuestion())
+      finalize(() => this.initialiseCurrentLesson())
     ).subscribe(
       lesson => {
         this.currentLesson = lesson;
@@ -79,11 +72,14 @@ export class AddLessonComponent implements OnInit {
     }, 2000);
   }
 
-  addQuestion() {
-    this.addLessonService.addQuestion(this.currentQuestion).subscribe(id => {
-      console.log(id);
-      this.currentQuestion.id = id;
-      this.currentLesson.questions = [...this.currentLesson.questions, this.currentQuestion];
+  saveQuestion() {
+    this.addLessonService.saveQuestion(this.currentQuestion, this.currentLesson.id).pipe(
+      finalize(() => this.initialiseCurrentQuestion())
+    ).subscribe(id => {
+      if (this.currentQuestion.id !== id) {
+        this.currentQuestion.id = id;
+        this.currentLesson.questions = [...this.currentLesson.questions, this.currentQuestion];
+      }
 
       this.save().subscribe(() => {
         this.getLesson(this.currentLesson.id);
@@ -93,11 +89,7 @@ export class AddLessonComponent implements OnInit {
 
   save() {
     console.log('submit', this.currentLesson);
-    return this.addLessonService.mergeLesson(this.currentLesson);
-  }
-
-  onSelect(event) {
-    console.log(this.currentOption, event);
+    return this.addLessonService.saveLesson(this.currentLesson);
   }
 
   onLessonSelect(event) {
@@ -116,8 +108,19 @@ export class AddLessonComponent implements OnInit {
     this.currentQuestion = this.currentLesson.questions.filter(q => q.id.toString() === event.target.value)[0];
   }
 
-  addOption() {
+  saveOption() {
+    this.addLessonService.saveOption(this.currentOption, this.currentQuestion.id).pipe(
+      finalize(() => this.initialiseCurrentOption())
+    ).subscribe(id => {
+      if (this.currentOption.id !== id) {
+        this.currentOption.id = id;
+        this.currentQuestion.options = [...this.currentQuestion.options, this.currentOption];
+      }
 
+      this.save().subscribe(() => {
+        this.getLesson(this.currentLesson.id);
+      });
+    });
   }
 
   onOptionSelect(event) {

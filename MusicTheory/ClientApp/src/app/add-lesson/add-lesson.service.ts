@@ -8,15 +8,18 @@ export class AddLessonService {
 
   constructor(private http: HttpClient) { }
 
-  mergeLesson(lesson: Lesson) {
-    console.log('mergeLesson');
+  saveLesson(lesson: Lesson) {
     const url = `https://localhost:44366/api/lesson`;
     return this.http.put<number>(url, lesson);
   }
 
-  addQuestion(question: Question) {
-    const url = `https://localhost:44366/api/lesson/question`;
-    return this.http.post<number>(url, question);
+  saveQuestion(question: Question, lessonId: number) {
+    const url = `https://localhost:44366/api/lesson/question?lessonId=${lessonId}`;
+    return this.http.put<number>(url, question);
   }
 
+  saveOption(option: QuestionOption, questionId: number) {
+    const url = `https://localhost:44366/api/lesson/option?questionId=${questionId}`;
+    return this.http.put<number>(url, option);
+  }
 }

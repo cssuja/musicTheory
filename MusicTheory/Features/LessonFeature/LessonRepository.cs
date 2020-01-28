@@ -18,8 +18,8 @@ namespace MusicTheory.Features.LessonFeature
         List<QuestionOption> GetSkeletonOptions(SqlConnection cnn, SqlTransaction t, int questionId);
         int MergeLesson(Lesson lesson, SqlConnection cnn, SqlTransaction t);
         int MergeQuestion(SqlConnection cnn, SqlTransaction t, Question question);
-        void InsertLessonQuestion(int lessonId, SqlConnection cnn, SqlTransaction t, int questionId);
-        void InsertQuestionOption(SqlConnection cnn, SqlTransaction t, int questionId, QuestionOption option);
+        void MergeLessonQuestion(int lessonId, SqlConnection cnn, SqlTransaction t, int questionId);
+        void MergeQuestionOption(SqlConnection cnn, SqlTransaction t, int questionId, QuestionOption option);
         IList<Models.Question> GetQuestionsForLesson(int lessonId, int maxNumberOfQuestions, SqlConnection cnn, SqlTransaction t);
     }
     public class LessonRepository : ILessonRepository
@@ -109,7 +109,7 @@ OUTPUT inserted.Id;
             return cnn.Query<int>(questionSql, new { question.Text, question.Id }, t).Single();
         }
 
-        public void InsertLessonQuestion(int lessonId, SqlConnection cnn, SqlTransaction t, int questionId)
+        public void MergeLessonQuestion(int lessonId, SqlConnection cnn, SqlTransaction t, int questionId)
         {
             var lessonQuestionSql = @"
 MERGE INTO LessonQuestions
@@ -125,7 +125,7 @@ THEN
         }
 
 
-        public void InsertQuestionOption(SqlConnection cnn, SqlTransaction t, int questionId, QuestionOption option)
+        public void MergeQuestionOption(SqlConnection cnn, SqlTransaction t, int questionId, QuestionOption option)
         {
             var questionOptionsSql = @"
 MERGE INTO QuestionOptions
@@ -139,10 +139,10 @@ THEN
     UPDATE SET IsCorrectAnswer = vIsCorrectAnswer, TypeId = vTypeId
 WHEN NOT MATCHED
 THEN
-    INSERT     (LessonId, QuestionId)
-        VALUES (vLessonId, vQuestionId);
+    INSERT     (OptionId, QuestionId, IsCorrectAnswer, TypeId)
+        VALUES (vOptionId, vQuestionId, vIsCorrectAnswer, vTypeId);
 ";
-            cnn.Execute(questionOptionsSql, new { questionId, optionId = option.Id, optionIsCorrect = option.IsCorrectAnswer, option.TypeId }, t);
+            cnn.Execute(questionOptionsSql, new { questionId, optionId = option.Id, option.IsCorrectAnswer, option.TypeId }, t);
         }
     }
 }

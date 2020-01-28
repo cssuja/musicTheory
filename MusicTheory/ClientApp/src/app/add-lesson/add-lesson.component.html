@@ -1,8 +1,6 @@
 <form #lessonForm="ngForm">
   <div>
     <label>Lesson</label>
-
-    {{currentLesson | json}}
     <select class="form-control"
             (change)="onLessonSelect($event)">
       <option value="">Select Existing</option>
@@ -29,8 +27,10 @@
             (click)="saveLesson()">Save Lesson</button>
     {{message}}
   </div>
+
   <br />
-  <div>
+
+  <div *ngIf="currentLesson.id">
     <label>Questions</label>
 
     <select class="form-control"
@@ -41,7 +41,6 @@
         {{question.text}}
       </option>
     </select>
-
 
     <br />
 
@@ -56,10 +55,12 @@
 
     <button type="button"
             class="btn btn-primary"
-            (click)="addQuestion()">Save Question</button>
+            (click)="saveQuestion()">Save Question</button>
   </div>
+
   <br />
-  <div>
+
+  <div *ngIf="currentLesson.id && currentQuestion.id">
     <label>Options</label>
 
     <select class="form-control"
@@ -71,19 +72,38 @@
       </option>
     </select>
 
-
     <br />
 
-    <div class="form-group">
+    <div class="row">
+      <div class="form-group col-8">
 
-      <input type="text"
-             [(ngModel)]="currentOption.option"
-             class="form-control"
-             name="currentOption.option"
-             placeholder="Add New">
+        <input type="text"
+               [(ngModel)]="currentOption.option"
+               class="form-control"
+               name="currentOption.option"
+               placeholder="Add New">
+      </div>
+
+      <div class="form-check col-4">
+        <input class="form-check-input"
+               type="checkbox"
+               value=""
+               [(ngModel)]="currentOption.isCorrectAnswer"
+               name="currentOption.isCorrectAnswer">
+        <label class="form-check-label">
+          Is this the correct answer?
+        </label>
+      </div>
     </div>
+
 
     <button type="button"
             class="btn btn-primary"
-            (click)="addOption()">Save Option</button>
+            (click)="saveOption()">Save Option</button>
   </div>
+
+  LESSON : {{currentLesson | json}}
+  <br />
+  QUESTION : {{currentQuestion | json}}
+  <br />
+  OPTION : {{currentOption | json}}
