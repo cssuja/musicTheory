@@ -30,13 +30,29 @@ namespace MusicTheory.Controllers
             return _service.GetLessons();
         }
 
-        [HttpPost]
-        public void Post([FromBody] Lesson lesson)
+        [HttpPut]
+        public int Put([FromBody] Lesson lesson)
         {
-            _service.MergeLesson(lesson);
+            return _service.MergeLesson(lesson);
         }
 
+        //[HttpPost]
+        //public int Post([FromBody] Lesson lesson)
+        //{
+        //    return _service.InsertLesson(lesson);
+        //}
 
+        [HttpPost("Question")]
+        public int Post([FromBody] Question question)
+        {
+            return _service.InsertQuestion(question);
+        }
+
+        [HttpPost("Option")]
+        public int Post([FromBody] QuestionOption option)
+        {
+            return _service.InsertOption(option);
+        }
 
     }
 }

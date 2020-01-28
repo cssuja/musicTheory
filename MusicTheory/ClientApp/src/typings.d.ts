@@ -10,6 +10,7 @@ interface QuestionOption {
     id: number;
     option: any;
     isCorrectAnswer: boolean;
+    typeId: number;
 }
 
 interface Lesson {

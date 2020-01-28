@@ -30,6 +30,8 @@ where QuestionOptions.QuestionId = @questionId
 
             var options = cnn.Query<QuestionOption>(sql, new { questionId = question.Id }, transaction: t).ToList();
 
+            options.ForEach(o => o.TypeId = OptionType.Text);
+
             return options;
         }
 

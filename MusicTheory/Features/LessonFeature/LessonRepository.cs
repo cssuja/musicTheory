@@ -15,7 +15,7 @@ namespace MusicTheory.Features.LessonFeature
     {
         Lesson GetLesson(int lessonId, SqlConnection cnn, SqlTransaction t);
         List<Lesson> GetLessons(SqlConnection cnn, SqlTransaction t);
-        int InsertLesson(string lessonName, SqlConnection cnn, SqlTransaction t);
+        int MergeLesson(Lesson lesson, SqlConnection cnn, SqlTransaction t);
         int InsertQuestion(SqlConnection cnn, SqlTransaction t, Question question);
         void InsertLessonQuestion(int lessonId, SqlConnection cnn, SqlTransaction t, int questionId);
         void InsertQuestionOption(SqlConnection cnn, SqlTransaction t, int questionId, QuestionOption option);
@@ -59,16 +59,27 @@ select * from Lessons
             return lessons;
         }
 
-        public int InsertLesson(string lessonName, SqlConnection cnn, SqlTransaction t)
+        public int MergeLesson(Lesson lesson, SqlConnection cnn, SqlTransaction t)
         {
             var lessonSql = @"
-                 Insert into Lessons (Name) values (@lessonName);
-        SELECT CAST(SCOPE_IDENTITY() as int)";
+MERGE INTO Lessons
+     USING (SELECT @Id    AS vId,
+                   @Name      AS vName) p
+        ON (Id = vId)
+WHEN MATCHED
+THEN
+    UPDATE SET Name = vName
+WHEN NOT MATCHED
+THEN
+    INSERT     (Name)
+        VALUES (vName)
+OUTPUT inserted.Id;
+";
 
-            return cnn.Query<int>(lessonSql, new { lessonName }, t).Single();
+            return cnn.Query<int>(lessonSql, new { lesson.Name, lesson.Id }, t).Single();
         }
 
-        public int InsertQuestion(SqlConnection cnn, SqlTransaction t, Models.Question question)
+        public int InsertQuestion(SqlConnection cnn, SqlTransaction t, Question question)
         {
             var questionSql = @"
 Insert into Questions(Text, TypeId) values(@text, @TypeId);

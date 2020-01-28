@@ -1,12 +1,73 @@
 <form #lessonForm="ngForm">
-  <div class="form-group">
-    <label>Lesson Name</label>
-    <input type="text"
-           [(ngModel)]="lesson.name"
-           class="form-control"
-           name="lesson.name">
+  <div>
+    <label>Lesson</label>
+
+    {{currentLesson | json}}
+    <select class="form-control"
+            (change)="onLessonSelect($event)">
+      <option value="">Select Existing</option>
+      <option [value]="lesson.id"
+              *ngFor="let lesson of lessons">
+        {{lesson.name}}
+      </option>
+    </select>
+
+    <br />
+
+    <div class="form-group">
+
+      <input type="text"
+             [(ngModel)]="currentLesson.name"
+             class="form-control"
+             name="currentLesson.name"
+             placeholder="Add New">
+    </div>
+
+    <button *ngIf="!currentLesson.id"
+            type="button"
+            class="btn btn-primary"
+            (click)="addLesson()">Save Lesson</button>
   </div>
-  {{lesson.questions | json}}
+  <br />
+  <div>
+    <label>Questions</label>
+
+    <select class="form-control"
+            (change)="onQuestionSelect($event)">
+      <option value="">Select Existing</option>
+      <option [value]="question.id"
+              *ngFor="let question of currentLesson.questions">
+        {{question.text}}
+      </option>
+    </select>
+
+
+    <br />
+
+    <div class="form-group">
+
+      <input type="text"
+             [(ngModel)]="currentQuestion.text"
+             class="form-control"
+             name="currentQuestion.text"
+             placeholder="Add New">
+    </div>
+
+    <button type="button"
+            class="btn btn-primary"
+            (click)="addQuestion()">Save Question</button>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
 
   <div class="col-11 offset-1">
     <div class="form-group">
@@ -93,6 +154,6 @@
           (click)="submit()">Submit</button>
 </form>
 
-{{lesson | json}}
+{{currentLesson | json}}
 <br>
 {{lessonForm.value | json}}

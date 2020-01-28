@@ -11,7 +11,12 @@ export class AddLessonService {
   mergeLesson(lesson: Lesson) {
     console.log('mergeLesson');
     const url = `https://localhost:44366/api/lesson`;
-    return this.http.post<Lesson>(url, lesson);
+    return this.http.put<number>(url, lesson);
+  }
+
+  addQuestion(question: Question) {
+    const url = `https://localhost:44366/api/lesson/question`;
+    return this.http.post<number>(url, question);
   }
 
 }
