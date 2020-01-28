@@ -43,9 +43,9 @@ namespace MusicTheory.Controllers
         //}
 
         [HttpPost("Question")]
-        public int Post([FromBody] Question question)
+        public int Post([FromBody] Question question, [FromQuery] int lessonId)
         {
-            return _service.InsertQuestion(question);
+            return _service.InsertQuestion(question, lessonId);
         }
 
         [HttpPost("Option")]

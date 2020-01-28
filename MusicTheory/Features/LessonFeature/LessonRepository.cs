@@ -15,8 +15,9 @@ namespace MusicTheory.Features.LessonFeature
     {
         Lesson GetLesson(int lessonId, SqlConnection cnn, SqlTransaction t);
         List<Lesson> GetLessons(SqlConnection cnn, SqlTransaction t);
+        List<QuestionOption> GetSkeletonOptions(SqlConnection cnn, SqlTransaction t, int questionId);
         int MergeLesson(Lesson lesson, SqlConnection cnn, SqlTransaction t);
-        int InsertQuestion(SqlConnection cnn, SqlTransaction t, Question question);
+        int MergeQuestion(SqlConnection cnn, SqlTransaction t, Question question);
         void InsertLessonQuestion(int lessonId, SqlConnection cnn, SqlTransaction t, int questionId);
         void InsertQuestionOption(SqlConnection cnn, SqlTransaction t, int questionId, QuestionOption option);
         IList<Models.Question> GetQuestionsForLesson(int lessonId, int maxNumberOfQuestions, SqlConnection cnn, SqlTransaction t);
@@ -29,7 +30,7 @@ namespace MusicTheory.Features.LessonFeature
         {
             IList<Models.Question> questions;
             var questionSql = @"
-select top (@maxNumberOfQuestions) Id, Text, TypeId from Questions
+select top (@maxNumberOfQuestions) Id, Text from Questions
 where Id in (select QuestionId from LessonQuestions where LessonId = @lessonId)
 ";
             questions = cnn.Query<Question>(questionSql, new { lessonId, maxNumberOfQuestions }, transaction: t).ToList();
@@ -59,6 +60,18 @@ select * from Lessons
             return lessons;
         }
 
+        public List<QuestionOption> GetSkeletonOptions(SqlConnection cnn, SqlTransaction t, int questionId)
+        {
+            var questionOptionIdsSql = @"
+select OptionId as ""Id"", IsCorrectAnswer, TypeId from QuestionOptions
+where QuestionId = @questionId
+";
+
+            var options = cnn.Query<QuestionOption>(questionOptionIdsSql, new { questionId }, transaction: t).ToList();
+            return options;
+
+        }
+
         public int MergeLesson(Lesson lesson, SqlConnection cnn, SqlTransaction t)
         {
             var lessonSql = @"
@@ -79,19 +92,36 @@ OUTPUT inserted.Id;
             return cnn.Query<int>(lessonSql, new { lesson.Name, lesson.Id }, t).Single();
         }
 
-        public int InsertQuestion(SqlConnection cnn, SqlTransaction t, Question question)
+        public int MergeQuestion(SqlConnection cnn, SqlTransaction t, Question question)
         {
             var questionSql = @"
-Insert into Questions(Text, TypeId) values(@text, @TypeId);
- SELECT CAST(SCOPE_IDENTITY() as int)
+MERGE INTO Questions
+     USING (SELECT @Id    AS vId
+                   ,@Text      AS vText) p
+        ON (Id = vId)
+WHEN MATCHED
+THEN
+    UPDATE SET Text = vText
+WHEN NOT MATCHED
+THEN
+    INSERT     (Text)
+        VALUES (vText)
+OUTPUT inserted.Id;
 ";
-            return cnn.Query<int>(questionSql, new { question.Text, question.TypeId }, t).Single();
+            return cnn.Query<int>(questionSql, new { question.Text, question.Id }, t).Single();
         }
 
         public void InsertLessonQuestion(int lessonId, SqlConnection cnn, SqlTransaction t, int questionId)
         {
             var lessonQuestionSql = @"
-Insert into LessonQuestions(LessonId, QuestionId) values(@lessonId,  @questionId);
+MERGE INTO LessonQuestions
+     USING (SELECT @LessonId    AS vLessonId
+                   ,@QuestionId      AS vQuestionId) p
+        ON (LessonId = vLessonId AND QuestionId = vQuestionId)
+WHEN NOT MATCHED
+THEN
+    INSERT     (LessonId, QuestionId)
+        VALUES (vLessonId, vQuestionId);
 ";
             cnn.Execute(lessonQuestionSql, new { lessonId, questionId }, t);
         }
@@ -100,9 +130,21 @@ Insert into LessonQuestions(LessonId, QuestionId) values(@lessonId,  @questionId
         public void InsertQuestionOption(SqlConnection cnn, SqlTransaction t, int questionId, QuestionOption option)
         {
             var questionOptionsSql = @"
-Insert into QuestionOptions(QuestionId, OptionId, IsCorrectAnswer) values(@questionId,  @optionId, @optionIsCorrect);
+MERGE INTO QuestionOptions
+     USING (SELECT @OptionId    AS vOptionId
+                   ,@QuestionId      AS vQuestionId
+                   ,@IsCorrectAnswer    AS vIsCorrectAnswer
+                   ,@TypeId             AS vTypeId) p
+        ON (OptionId = vOptionId AND QuestionId = vQuestionId)
+WHEN MATCHED
+THEN
+    UPDATE SET IsCorrectAnswer = vIsCorrectAnswer, TypeId = vTypeId
+WHEN NOT MATCHED
+THEN
+    INSERT     (LessonId, QuestionId)
+        VALUES (vLessonId, vQuestionId);
 ";
-            cnn.Execute(questionOptionsSql, new { questionId, optionId = option.Id, optionIsCorrect = option.IsCorrectAnswer }, t);
+            cnn.Execute(questionOptionsSql, new { questionId, optionId = option.Id, optionIsCorrect = option.IsCorrectAnswer, option.TypeId }, t);
         }
     }
 }

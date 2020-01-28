@@ -6,7 +6,7 @@ namespace MusicTheory.Features.LessonFeature.OptionFeature
 {
     public interface IOptionRepository
     {
-        int InsertOption(SqlConnection cnn, SqlTransaction t, object text);
-        List<QuestionOption> GetOptionsForQuestion(SqlConnection cnn, SqlTransaction t, Question question);
+        int MergeOption(SqlConnection cnn, SqlTransaction t, QuestionOption option);
+        object GetOption(SqlConnection cnn, SqlTransaction t, int optionId);
     }
 }

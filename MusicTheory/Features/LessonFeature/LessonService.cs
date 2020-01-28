@@ -15,7 +15,7 @@ namespace MusicTheory.Features.LessonFeature
         List<Lesson> GetLessons();
         int MergeLesson(Lesson lesson);
         int InsertLesson(Lesson lesson);
-        int InsertQuestion(Question question);
+        int InsertQuestion(Question question, int lessonId);
         int InsertOption(QuestionOption option);
     }
     public class LessonService : ILessonService
@@ -48,7 +48,19 @@ namespace MusicTheory.Features.LessonFeature
 
                     foreach (var question in questions)
                     {
-                        question.Options = _optionRepositoryFactory.CreateRepository(question.TypeId).GetOptionsForQuestion(cnn, t, question);
+                        if(question.Options == null)
+                        {
+                            question.Options = new List<QuestionOption>();
+                        }
+
+                        var skeletonOptions = _repository.GetSkeletonOptions(cnn, t, question.Id);
+                        
+                        foreach(var option in skeletonOptions)
+                        {
+                            var optionObject = _optionRepositoryFactory.CreateRepository(option.TypeId).GetOption(cnn, t, option.Id);
+                            option.Option = optionObject;
+                            question.Options.Add(option);
+                        }
                     }
 
                     lesson.Questions = questions;
@@ -102,7 +114,7 @@ namespace MusicTheory.Features.LessonFeature
 
                 using (var t = cnn.BeginTransaction())
                 {
-                    option.Id = _optionRepositoryFactory.CreateRepository(option.TypeId).InsertOption(cnn, t, option.Option);
+                    option.Id = _optionRepositoryFactory.CreateRepository(option.TypeId).MergeOption(cnn, t, option);
                     t.Commit();
                 }
             }
@@ -110,7 +122,7 @@ namespace MusicTheory.Features.LessonFeature
             return option.Id;
         }
 
-        public int InsertQuestion(Question question)
+        public int InsertQuestion(Question question, int lessonId)
         {
             using (var cnn = new SqlConnection(_config.ConnectionStrings.MusicTheoryConnectionString))
             {
@@ -118,7 +130,8 @@ namespace MusicTheory.Features.LessonFeature
 
                 using (var t = cnn.BeginTransaction())
                 {
-                    question.Id = _repository.InsertQuestion(cnn, t, question);
+                    question.Id = _repository.MergeQuestion(cnn, t, question);
+                    _repository.InsertLessonQuestion(lessonId, cnn, t, question.Id);
                     t.Commit();
                 }
             }
@@ -137,13 +150,13 @@ namespace MusicTheory.Features.LessonFeature
 
                     foreach (var question in lesson.Questions)
                     {
-                        question.Id = _repository.InsertQuestion(cnn, t, question);
+                        question.Id = _repository.MergeQuestion(cnn, t, question);
 
                         _repository.InsertLessonQuestion(lesson.Id, cnn, t, question.Id);
 
                         foreach (var textOption in question.Options)
                         {
-                            textOption.Id = _optionRepositoryFactory.CreateRepository(question.TypeId).InsertOption(cnn, t, textOption.Option.ToString());
+                            textOption.Id = _optionRepositoryFactory.CreateRepository(textOption.TypeId).MergeOption(cnn, t, textOption);
 
                             _repository.InsertQuestionOption(cnn, t, question.Id, textOption);
                         }

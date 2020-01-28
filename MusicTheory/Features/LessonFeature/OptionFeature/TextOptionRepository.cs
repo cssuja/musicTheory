@@ -10,39 +10,35 @@ namespace MusicTheory.Features.LessonFeature.OptionFeature
 {
     public class TextOptionRepository : IOptionRepository
     {
-        public List<QuestionOption> GetOptionsForQuestion(SqlConnection cnn, SqlTransaction t, Question question)
+        public object GetOption(SqlConnection cnn, SqlTransaction t, int optionId)
         {
-            var textOptionsSql = @"
-select TextOptions.Id, TextOptions.Text as ""Option"", QuestionOptions.IsCorrectAnswer from TextOptions 
-inner join QuestionOptions on TextOptions.Id = QuestionOptions.OptionId
-where QuestionOptions.QuestionId = @questionId
+            var textOptionSql = @"
+select TextOptions.Text from TextOptions
+where Id = @optionId
 ";
-            string sql = "";
+            var option = cnn.Query<string>(textOptionSql, new { optionId }, transaction: t).First();
 
-            switch (question.TypeId)
-            {
-                case OptionType.Text:
-                    {
-                        sql = textOptionsSql;
-                        break;
-                    }
-            }
-
-            var options = cnn.Query<QuestionOption>(sql, new { questionId = question.Id }, transaction: t).ToList();
-
-            options.ForEach(o => o.TypeId = OptionType.Text);
-
-            return options;
+            return option;
         }
 
 
-        public int InsertOption(SqlConnection cnn, SqlTransaction t, object text)
+        public int MergeOption(SqlConnection cnn, SqlTransaction t, QuestionOption option)
         {
             var textOptionSql = @"
-Insert into TextOptions(Text) values(@text);
- SELECT CAST(SCOPE_IDENTITY() as int)
+MERGE INTO TextOptions
+     USING (SELECT @Id    AS vId,
+                   @Text      AS vText) p
+        ON (Id = vId)
+WHEN MATCHED
+THEN
+    UPDATE SET Text = vText
+WHEN NOT MATCHED
+THEN
+    INSERT     (Text)
+        VALUES (vText)
+OUTPUT inserted.Id;
 ";
-            return cnn.Query<int>(textOptionSql, new {text= text.ToString() }, t).Single();
+            return cnn.Query<int>(textOptionSql, new {text= option.Option.ToString(), option.Id }, t).Single();
         }
     }
 }

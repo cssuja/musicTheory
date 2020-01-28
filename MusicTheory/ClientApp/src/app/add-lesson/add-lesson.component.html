@@ -23,10 +23,11 @@
              placeholder="Add New">
     </div>
 
-    <button *ngIf="!currentLesson.id"
+    <button *ngIf="currentLesson.id"
             type="button"
             class="btn btn-primary"
-            (click)="addLesson()">Save Lesson</button>
+            (click)="saveLesson()">Save Lesson</button>
+    {{message}}
   </div>
   <br />
   <div>
@@ -149,9 +150,6 @@
 
   </div>
 
-  <button type="submit"
-          class="btn btn-primary"
-          (click)="submit()">Submit</button>
 </form>
 
 {{currentLesson | json}}

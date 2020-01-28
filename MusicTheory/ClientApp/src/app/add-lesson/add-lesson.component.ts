@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AddLessonService } from './add-lesson.service';
 import { LessonsService } from '../lessons/lessons.service';
 import { QuestionService } from '../question/question.service';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-add-lesson',
@@ -14,6 +14,7 @@ export class AddLessonComponent implements OnInit {
   currentLesson: Lesson = {} as Lesson;
   currentQuestion: Question;
   currentOption: QuestionOption;
+  message: string;
   constructor(private addLessonService: AddLessonService,
     private lessonService: LessonsService,
     private questionService: QuestionService) { }
@@ -55,13 +56,27 @@ export class AddLessonComponent implements OnInit {
     console.log(JSON.stringify(this.currentOption));
   }
 
-  addLesson() {
+  saveLesson() {
     this.addLessonService.mergeLesson(this.currentLesson).pipe(
-      switchMap(id => this.questionService.getLesson(id))
-    ).subscribe(lesson => {
-      this.currentLesson = lesson;
-      this.getLessons();
-    });
+      switchMap(id => this.questionService.getLesson(id)),
+      finalize(() => this.initialiseCurrentQuestion())
+    ).subscribe(
+      lesson => {
+        this.currentLesson = lesson;
+        this.getLessons();
+        this.displayMessage('Saved successfully');
+      },
+      error => {
+        this.displayMessage('Save failed');
+      }
+    );
+  }
+
+  private displayMessage(message: string) {
+    this.message = message;
+    setTimeout(() => {
+      this.message = '';
+    }, 2000);
   }
 
   addQuestion() {
