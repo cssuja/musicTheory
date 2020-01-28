@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AddLessonService {
 
+
   constructor(private http: HttpClient) { }
 
   saveLesson(lesson: Lesson) {
@@ -21,5 +22,13 @@ export class AddLessonService {
   saveOption(option: QuestionOption, questionId: number) {
     const url = `https://localhost:44366/api/lesson/option?questionId=${questionId}`;
     return this.http.put<number>(url, option);
+  }
+
+  deleteOption(questionId: number, optionId: number, typeId: number) {
+    console.log('Question Id', questionId);
+    console.log('Option Id', optionId);
+    console.log('type Id', typeId);
+    const url = `https://localhost:44366/api/lesson/option?questionId=${questionId}&optionId=${optionId}&typeId=${typeId}`;
+    return this.http.delete<void>(url);
   }
 }

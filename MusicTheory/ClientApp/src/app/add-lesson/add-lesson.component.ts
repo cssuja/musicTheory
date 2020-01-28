@@ -41,12 +41,12 @@ export class AddLessonComponent implements OnInit {
   initialiseCurrentQuestion() {
     this.currentQuestion = {} as Question;
     this.currentQuestion.options = [];
-    this.currentQuestion.typeId = 1;
     this.initialiseCurrentOption();
   }
 
   initialiseCurrentOption() {
     this.currentOption = {} as QuestionOption;
+    this.currentOption.typeId = 1;
   }
 
   saveLesson() {
@@ -80,10 +80,7 @@ export class AddLessonComponent implements OnInit {
         this.currentQuestion.id = id;
         this.currentLesson.questions = [...this.currentLesson.questions, this.currentQuestion];
       }
-
-      this.save().subscribe(() => {
-        this.getLesson(this.currentLesson.id);
-      });
+      this.getLesson(this.currentLesson.id);
     });
   }
 
@@ -117,9 +114,13 @@ export class AddLessonComponent implements OnInit {
         this.currentQuestion.options = [...this.currentQuestion.options, this.currentOption];
       }
 
-      this.save().subscribe(() => {
-        this.getLesson(this.currentLesson.id);
-      });
+      this.getLesson(this.currentLesson.id);
+    });
+  }
+  deleteOption() {
+    this.addLessonService.deleteOption(this.currentQuestion.id, this.currentOption.id, this.currentOption.typeId).subscribe(() => {
+      this.getLesson(this.currentLesson.id);
+      this.initialiseCurrentQuestion();
     });
   }
 

@@ -16,6 +16,7 @@ namespace MusicTheory.Features.LessonFeature
         int MergeLesson(Lesson lesson);
         int MergeQuestion(Question question, int lessonId);
         int MergeOption(QuestionOption option, int questionId);
+        void DeleteOption(int questionId, int optionId, OptionType typeId);
     }
     public class LessonService : ILessonService
     {
@@ -152,6 +153,25 @@ namespace MusicTheory.Features.LessonFeature
             }
 
             return lesson.Id;
+        }
+
+        public void DeleteOption(int questionId, int optionId, OptionType typeId)
+        {
+            using (var cnn = new SqlConnection(_config.ConnectionStrings.MusicTheoryConnectionString))
+            {
+                cnn.Open();
+
+                using (var t = cnn.BeginTransaction())
+                {
+                    _repository.DeleteQuestionOptions(cnn, t, questionId, optionId);
+                    if (!_repository.IsOptionUsedByAnyQuestions(cnn, t, optionId))
+                    {
+                        _optionRepositoryFactory.CreateRepository(typeId).DeleteOption(cnn, t, optionId);
+                    }
+
+                    t.Commit();
+                }
+            }
         }
     }
 }

@@ -20,7 +20,9 @@ namespace MusicTheory.Features.LessonFeature
         int MergeQuestion(SqlConnection cnn, SqlTransaction t, Question question);
         void MergeLessonQuestion(int lessonId, SqlConnection cnn, SqlTransaction t, int questionId);
         void MergeQuestionOption(SqlConnection cnn, SqlTransaction t, int questionId, QuestionOption option);
-        IList<Models.Question> GetQuestionsForLesson(int lessonId, int maxNumberOfQuestions, SqlConnection cnn, SqlTransaction t);
+        IList<Question> GetQuestionsForLesson(int lessonId, int maxNumberOfQuestions, SqlConnection cnn, SqlTransaction t);
+        void DeleteQuestionOptions(SqlConnection cnn, SqlTransaction t, int questionId, int optionId);
+        bool IsOptionUsedByAnyQuestions(SqlConnection cnn, SqlTransaction t, int optionId);
     }
     public class LessonRepository : ILessonRepository
     {
@@ -67,7 +69,17 @@ where QuestionId = @questionId
 
             var options = cnn.Query<QuestionOption>(questionOptionIdsSql, new { questionId }, transaction: t).ToList();
             return options;
+        }
 
+        public bool IsOptionUsedByAnyQuestions(SqlConnection cnn, SqlTransaction t, int optionId)
+        {
+            var questionOptionIdsSql = @"
+select count(*) from QuestionOptions
+where OptionId = @optionId
+";
+
+            var noOfRows = cnn.QuerySingle<int>(questionOptionIdsSql, new { optionId }, transaction: t);
+            return noOfRows > 0;
         }
 
         public int MergeLesson(Lesson lesson, SqlConnection cnn, SqlTransaction t)
@@ -143,6 +155,15 @@ THEN
         VALUES (vOptionId, vQuestionId, vIsCorrectAnswer, vTypeId);
 ";
             cnn.Execute(questionOptionsSql, new { questionId, optionId = option.Id, option.IsCorrectAnswer, option.TypeId }, t);
+        }
+
+        public void DeleteQuestionOptions(SqlConnection cnn, SqlTransaction t, int questionId, int optionId)
+        {
+            var deleteSql = @"
+delete from QuestionOptions 
+where QuestionId = @questionId and OptionId = @optionId;
+";
+            cnn.Execute(deleteSql, new { optionId, questionId }, t);
         }
     }
 }

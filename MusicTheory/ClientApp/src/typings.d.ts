@@ -3,7 +3,6 @@ interface Question {
     text: string;
     options: QuestionOption[];
     answeredCorrectly: boolean;
-    typeId: number;
 }
 
 interface QuestionOption {

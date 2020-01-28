@@ -10,6 +10,15 @@ namespace MusicTheory.Features.LessonFeature.OptionFeature
 {
     public class TextOptionRepository : IOptionRepository
     {
+        public void DeleteOption(SqlConnection cnn, SqlTransaction t, int optionId)
+        {
+            var deleteOptionSql = @"
+delete from TextOptions
+where Id = @optionId;
+";
+            cnn.Execute(deleteOptionSql, new { optionId }, transaction: t);
+        }
+
         public object GetOption(SqlConnection cnn, SqlTransaction t, int optionId)
         {
             var textOptionSql = @"

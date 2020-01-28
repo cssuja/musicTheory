@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MusicTheory.Features.LessonFeature;
 using MusicTheory.Features.LessonFeature.Models;
+using MusicTheory.Features.LessonFeature.OptionFeature;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,12 +37,6 @@ namespace MusicTheory.Controllers
             return _service.MergeLesson(lesson);
         }
 
-        //[HttpPost]
-        //public int Post([FromBody] Lesson lesson)
-        //{
-        //    return _service.InsertLesson(lesson);
-        //}
-
         [HttpPut("Question")]
         public int Put([FromBody] Question question, [FromQuery] int lessonId)
         {
@@ -54,5 +49,10 @@ namespace MusicTheory.Controllers
             return _service.MergeOption(option, questionId);
         }
 
+        [HttpDelete("Option")]
+        public void Delete([FromQuery] int questionId, [FromQuery] int optionId, [FromQuery] OptionType typeId)
+        {
+            _service.DeleteOption(questionId, optionId, typeId);
+        }
     }
 }
