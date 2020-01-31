@@ -50,9 +50,21 @@ namespace MusicTheory.Controllers
         }
 
         [HttpDelete("Option")]
-        public void Delete([FromQuery] int questionId, [FromQuery] int optionId, [FromQuery] OptionType typeId)
+        public void DeleteOption([FromQuery] int questionId, [FromQuery] int optionId, [FromQuery] OptionType typeId)
         {
             _service.DeleteOption(questionId, optionId, typeId);
+        }
+
+        [HttpDelete("Question")]
+        public void DeleteQuestion([FromQuery] int lessonId, [FromQuery] int questionId)
+        {
+            _service.DeleteQuestion(lessonId, questionId);
+        }
+
+        [HttpDelete]
+        public void DeleteLesson([FromQuery] int lessonId)
+        {
+            _service.DeleteLesson(lessonId);
         }
     }
 }

@@ -17,6 +17,8 @@ namespace MusicTheory.Features.LessonFeature
         int MergeQuestion(Question question, int lessonId);
         int MergeOption(QuestionOption option, int questionId);
         void DeleteOption(int questionId, int optionId, OptionType typeId);
+        void DeleteQuestion(int lessonId, int questionId);
+        void DeleteLesson(int lessonId);
     }
     public class LessonService : ILessonService
     {
@@ -163,11 +165,67 @@ namespace MusicTheory.Features.LessonFeature
 
                 using (var t = cnn.BeginTransaction())
                 {
-                    _repository.DeleteQuestionOptions(cnn, t, questionId, optionId);
-                    if (!_repository.IsOptionUsedByAnyQuestions(cnn, t, optionId))
+                    DeleteOption(cnn, t, questionId, optionId, typeId);
+
+                    t.Commit();
+                }
+            }
+        }
+
+        private void DeleteOption(SqlConnection cnn, SqlTransaction t, int questionId, int optionId, OptionType typeId)
+        {
+            _repository.DeleteQuestionOptions(cnn, t, questionId, optionId);
+            if (!_repository.IsOptionUsedByAnyQuestions(cnn, t, optionId))
+            {
+                _optionRepositoryFactory.CreateRepository(typeId).DeleteOption(cnn, t, optionId);
+            }
+        }
+
+        public void DeleteQuestion(int lessonId, int questionId)
+        {
+            using (var cnn = new SqlConnection(_config.ConnectionStrings.MusicTheoryConnectionString))
+            {
+                cnn.Open();
+
+                using (var t = cnn.BeginTransaction())
+                {
+                    DeleteQuestion(cnn, t, lessonId, questionId);
+
+                    t.Commit();
+                }
+            }
+        }
+
+        private void DeleteQuestion(SqlConnection cnn, SqlTransaction t, int lessonId, int questionId)
+        {
+            var options = _repository.GetSkeletonOptions(cnn, t, questionId);
+            foreach (var option in options)
+            {
+                DeleteOption(cnn, t, questionId, option.Id, option.TypeId);
+            }
+            _repository.DeleteLessonQuestions(cnn, t, lessonId, questionId);
+            if (!_repository.IsQuestionUsedByAnyLessons(cnn, t, questionId))
+            {
+                _repository.DeleteQuestion(cnn, t, questionId);
+            }
+        }
+
+        public void DeleteLesson(int lessonId)
+        {
+            using (var cnn = new SqlConnection(_config.ConnectionStrings.MusicTheoryConnectionString))
+            {
+                cnn.Open();
+
+                using (var t = cnn.BeginTransaction())
+                {
+                    var questions = _repository.GetQuestionsForLesson(lessonId, int.MaxValue, cnn, t);
+
+                    foreach (var question in questions)
                     {
-                        _optionRepositoryFactory.CreateRepository(typeId).DeleteOption(cnn, t, optionId);
+                        DeleteQuestion(cnn, t, lessonId, question.Id);
                     }
+
+                    _repository.DeleteLesson(cnn, t, lessonId);
 
                     t.Commit();
                 }

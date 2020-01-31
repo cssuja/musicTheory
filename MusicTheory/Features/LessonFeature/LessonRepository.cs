@@ -23,6 +23,10 @@ namespace MusicTheory.Features.LessonFeature
         IList<Question> GetQuestionsForLesson(int lessonId, int maxNumberOfQuestions, SqlConnection cnn, SqlTransaction t);
         void DeleteQuestionOptions(SqlConnection cnn, SqlTransaction t, int questionId, int optionId);
         bool IsOptionUsedByAnyQuestions(SqlConnection cnn, SqlTransaction t, int optionId);
+        void DeleteLessonQuestions(SqlConnection cnn, SqlTransaction t, int lessonId, int questionId);
+        bool IsQuestionUsedByAnyLessons(SqlConnection cnn, SqlTransaction t, int questionId);
+        void DeleteQuestion(SqlConnection cnn, SqlTransaction t, int questionId);
+        void DeleteLesson(SqlConnection cnn, SqlTransaction t, int lessonId);
     }
     public class LessonRepository : ILessonRepository
     {
@@ -164,6 +168,44 @@ delete from QuestionOptions
 where QuestionId = @questionId and OptionId = @optionId;
 ";
             cnn.Execute(deleteSql, new { optionId, questionId }, t);
+        }
+
+        public void DeleteLessonQuestions(SqlConnection cnn, SqlTransaction t, int lessonId, int questionId)
+        {
+            var deleteSql = @"
+delete from LessonQuestions 
+where LessonId = @lessonId and QuestionId = @questionId;
+";
+            cnn.Execute(deleteSql, new { lessonId, questionId }, t);
+        }
+
+        public bool IsQuestionUsedByAnyLessons(SqlConnection cnn, SqlTransaction t, int questionId)
+        {
+            var lessonQuestionIdsSql = @"
+select count(*) from LessonQuestions
+where QuestionId = @questionId
+";
+
+            var noOfRows = cnn.QuerySingle<int>(lessonQuestionIdsSql, new { questionId }, transaction: t);
+            return noOfRows > 0;
+        }
+
+        public void DeleteQuestion(SqlConnection cnn, SqlTransaction t, int questionId)
+        {
+            var deleteQuestionSql = @"
+delete from Questions
+where Id = @questionId;
+";
+            cnn.Execute(deleteQuestionSql, new { questionId }, transaction: t);
+        }
+
+        public void DeleteLesson(SqlConnection cnn, SqlTransaction t, int lessonId)
+        {
+            var deleteLessonSql = @"
+delete from Lessons
+where Id = @lessonId;
+";
+            cnn.Execute(deleteLessonSql, new { lessonId }, transaction: t);
         }
     }
 }
