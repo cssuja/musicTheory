@@ -4,7 +4,7 @@
     <label>Lesson</label>
     <select class="form-control"
             (change)="onLessonSelect($event)">
-      <option value="">Select Existing</option>
+      <option value="">-</option>
       <option [value]="lesson.id"
               *ngFor="let lesson of lessons">
         {{lesson.name}}
@@ -22,7 +22,7 @@
              placeholder="Add New">
     </div>
 
-    <button *ngIf="currentLesson.id"
+    <button *ngIf="currentLesson.id || currentLesson.name"
             type="button"
             class="btn btn-primary"
             (click)="saveLesson()">Save Lesson</button>
@@ -41,7 +41,7 @@
 
     <select class="form-control"
             (change)="onQuestionSelect($event)">
-      <option value="">Select Existing</option>
+      <option value="">-</option>
       <option [value]="question.id"
               *ngFor="let question of currentLesson.questions">
         {{question.text}}
@@ -76,7 +76,7 @@
 
     <select class="form-control"
             (change)="onOptionSelect($event)">
-      <option value="">Select Existing</option>
+      <option value="">-</option>
       <option [value]="option.id"
               *ngFor="let option of currentQuestion.options">
         {{option.option.toString()}}

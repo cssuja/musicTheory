@@ -159,15 +159,27 @@ export class AddLessonComponent implements OnInit {
   }
 
   onLessonSelect(event) {
-    this.getLesson(event.target.value);
+    if (event.target.value) {
+      this.getLesson(event.target.value);
+    } else {
+      this.initialiseCurrentLesson();
+    }
   }
 
   onQuestionSelect(event) {
-    this.currentQuestion = this.currentLesson.questions.filter(q => q.id.toString() === event.target.value)[0];
+    if (event.target.value) {
+      this.currentQuestion = this.currentLesson.questions.filter(q => q.id.toString() === event.target.value)[0];
+    } else {
+      this.initialiseCurrentQuestion();
+    }
   }
 
   onOptionSelect(event) {
-    this.currentOption = this.currentQuestion.options.filter(o => o.id.toString() === event.target.value)[0];
+    if (event.target.value) {
+      this.currentOption = this.currentQuestion.options.filter(o => o.id.toString() === event.target.value)[0];
+    } else {
+      this.initialiseCurrentOption();
+    }
   }
 
   private displayMessage(message: string) {
