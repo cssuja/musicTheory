@@ -7,7 +7,7 @@ namespace MusicTheory.Features.LessonFeature.OptionFeature
 {
     public interface IOptionRepositoryFactory
     {
-        public IOptionRepository CreateRepository(OptionType optionType);
+    IOptionRepository CreateRepository(OptionType optionType);
     }
 
     public enum OptionType
