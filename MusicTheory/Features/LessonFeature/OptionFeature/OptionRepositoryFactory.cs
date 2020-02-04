@@ -7,7 +7,7 @@ namespace MusicTheory.Features.LessonFeature.OptionFeature
 {
     public interface IOptionRepositoryFactory
     {
-        public IOptionRepository CreateRepository(OptionType optionType);
+        IOptionRepository CreateRepository(OptionType optionType);
     }
 
     public enum OptionType
@@ -23,6 +23,8 @@ namespace MusicTheory.Features.LessonFeature.OptionFeature
             {
                 case OptionType.Text:
                     return new TextOptionRepository();
+                case OptionType.Image:
+                    return new ImageOptionRepository();
                 default:
                     return new TextOptionRepository();
             }
