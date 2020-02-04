@@ -23,6 +23,8 @@ namespace MusicTheory.Features.LessonFeature.OptionFeature
             {
                 case OptionType.Text:
                     return new TextOptionRepository();
+                case OptionType.Image:
+                    return new ImageOptionRepository();
                 default:
                     return new TextOptionRepository();
             }

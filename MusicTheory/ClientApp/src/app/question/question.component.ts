@@ -30,6 +30,14 @@ export class QuestionComponent implements OnInit {
     return this.currentQuestion.options.filter(x => x.isCorrectAnswer)[0];
   }
 
+  get imageOptions() {
+    return this.currentQuestion.options.filter(o => o.typeId === 2);
+  }
+
+  get textOptions() {
+    return this.currentQuestion.options.filter(o => o.typeId === 1);
+  }
+
   constructor(private route: ActivatedRoute,
     private router: Router,
     private service: QuestionService) { }
