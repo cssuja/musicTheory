@@ -1,99 +1,103 @@
-<div class="container-fluid"
-     *ngIf="currentQuestion">
-  <div *ngIf="!lessonEnded"
-       class="question">
-    <div class="row">
-      <div class="col-12">
-        <div class="text-right">
-          {{currentScore}}/{{lesson.questions.length}}
-        </div>
-      </div>
-    </div>
-    <div class="row question-text">
-
-      <div [innerHTML]="currentQuestion?.text"></div>
-    </div>
-
-    <div class="row">
-      <div class="col-12">
-        <div class="list-group"
-             *ngIf="textOptions && textOptions.length > 0">
-          <button *ngFor="let option of textOptions"
-                  (click)="setSelectedOption(option.id)"
-                  class="list-group-item list-group-item-action option"
-                  [disabled]="displayResultPanel">
-            {{option.option}}
-          </button>
-        </div>
-        <div class="row">
-          <div *ngFor="let option of imageOptions"
-               class="col-6">
-            <img (click)="setSelectedOption(option.id)"
-                 class="img-fluid mx-auto d-block rounded"
-                 src="{{'data:image/jpg;base64,' + option.option}}" />
+<div *ngIf="currentQuestion">
+  <div class="container">
+    <div *ngIf="!lessonEnded"
+         class="question">
+      <div class="row">
+        <div class="col-12">
+          <div class="text-right">
+            {{currentScore}}/{{lesson.questions.length}}
           </div>
         </div>
+      </div>
+      <div class="row question-text">
 
+        <div [innerHTML]="currentQuestion?.text"></div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="list-group"
+               *ngIf="textOptions && textOptions.length > 0">
+            <button *ngFor="let option of textOptions"
+                    (click)="setSelectedOption(option.id)"
+                    class="list-group-item list-group-item-action option"
+                    [disabled]="displayResultPanel">
+              {{option.option}}
+            </button>
+          </div>
+          <div class="row">
+            <div *ngFor="let option of imageOptions"
+                 class="col-6">
+              <img (click)="setSelectedOption(option.id)"
+                   class="img-fluid mx-auto d-block rounded"
+                   src="{{'data:image/jpg;base64,' + option.option}}" />
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
-  </div>
 
-  <div *ngIf="lessonEnded">
-    <h3 class="score">Score : {{currentScore}}/{{lesson.questions.length}}</h3>
+    <div *ngIf="lessonEnded">
+      <h3 class="score">Score : {{currentScore}}/{{lesson.questions.length}}</h3>
+    </div>
   </div>
 
   <div class="results-panel  border-top"
        [ngClass]="{'list-group-item-success': isAnswerCorrect && displayResultPanel && !lessonEnded, 'list-group-item-danger': !isAnswerCorrect && displayResultPanel && !lessonEnded}">
-    <div class="row"
-         *ngIf="!displayResultPanel">
-      <div class="col-md-6 col-12 text-center">
-        <button class="btn btn-primary action-button"
-                (click)="skip()">Skip</button>
-      </div>
-      <div class="col-md-6 col-12 text-center order-first order-md-last">
-        <button class="btn action-button"
-                [ngClass]="{'btn-success' : selectedOptionId, 'btn-secondary' : !selectedOptionId}"
-                (click)="checkIfCorrect()"
-                [disabled]="!selectedOptionId">Check</button>
-      </div>
-    </div>
-
-    <div class="row"
-         *ngIf="displayResultPanel">
-      <div class="col-md-6 col-12 text-center">
-        <div *ngIf="!lessonEnded">
-          <div *ngIf="isAnswerCorrect">
-            <div class="row">
-              <div class="col-4">
-                <i class="material-icons text-success"
-                   style="font-size:60px;">done</i>
-              </div>
-              <div class="col-8 result-text">
-                You are correct!
-              </div>
-            </div>
-          </div>
-          <div *ngIf="!isAnswerCorrect">
-            <div class="row">
-              <div class="col-4">
-                <i class="material-icons text-danger"
-                   style="font-size:60px;">clear</i>
-              </div>
-              <div class="col-8 result-text">
-                Correct solution: {{correctAnswer.text}}
-              </div>
-            </div>
-          </div>
+    <div class="container">
+      <div class="row"
+           *ngIf="!displayResultPanel">
+        <div class="col-md-6 col-12 text-center">
+          <button class="btn btn-primary action-button"
+                  (click)="skip()">Skip</button>
+        </div>
+        <div class="col-md-6 col-12 text-center order-first order-md-last">
+          <button class="btn action-button"
+                  [ngClass]="{'btn-success' : selectedOptionId, 'btn-secondary' : !selectedOptionId}"
+                  (click)="checkIfCorrect()"
+                  [disabled]="!selectedOptionId">Check</button>
         </div>
       </div>
 
 
-      <div class="col-md-6 col-12 text-center">
-        <button class="btn btn-primary action-button"
-                (click)="continue()">Continue</button>
+      <div class="row"
+           *ngIf="displayResultPanel">
+        <div class="col-md-6 col-12 text-center">
+          <div *ngIf="!lessonEnded">
+            <div *ngIf="isAnswerCorrect">
+              <div class="row">
+                <div class="col-4">
+                  <i class="material-icons text-success"
+                     style="font-size:60px;">done</i>
+                </div>
+                <div class="col-8 result-text">
+                  You are correct!
+                </div>
+              </div>
+            </div>
+            <div *ngIf="!isAnswerCorrect">
+              <div class="row">
+                <div class="col-4">
+                  <i class="material-icons text-danger"
+                     style="font-size:60px;">clear</i>
+                </div>
+                <div class="col-8 result-text">
+                  Correct solution: {{correctAnswer.text}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-md-6 col-12 text-center">
+          <button class="btn btn-primary action-button"
+                  (click)="continue()">Continue</button>
+        </div>
       </div>
     </div>
+
+
   </div>
-
-
 </div>
