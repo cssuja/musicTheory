@@ -46,11 +46,26 @@ button.action-button {
   text-align: left;
 }
 
-img {
-  max-height: 150px;
-  margin-bottom: 10px;
+.image-option {
+  cursor: pointer;
+
+  &.selected {
+    background-color: lightblue;
+  }
+
+  img {
+    margin: 10px;
+    max-height: 150px;
+
+
+  }
 }
+
 
 .sticky-container {
   margin-bottom: 200px;
+}
+
+.correct-answer {
+  height: 50px;
 }

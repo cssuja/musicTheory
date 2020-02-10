@@ -10,7 +10,7 @@ import { QuestionService } from './question.service';
 export class QuestionComponent implements OnInit {
   lesson: Lesson;
   currentQuestionIndex = 0;
-  selectedOptionId: number;
+  selectedOption: QuestionOption = {} as QuestionOption;
   displayResultPanel = false;
   lessonEnded = false;
 
@@ -23,7 +23,7 @@ export class QuestionComponent implements OnInit {
   }
 
   get isAnswerCorrect() {
-    return this.correctAnswer.id === this.selectedOptionId;
+    return this.correctAnswer.id === this.selectedOption.id && this.correctAnswer.typeId === this.selectedOption.typeId;
   }
 
   get correctAnswer() {
@@ -56,12 +56,12 @@ export class QuestionComponent implements OnInit {
     this.currentQuestion.answeredCorrectly = this.isAnswerCorrect;
   }
 
-  setSelectedOption(optionId: number) {
-    this.selectedOptionId = optionId;
+  setSelectedOption(option: QuestionOption) {
+    this.selectedOption = option;
   }
 
   moveToNext() {
-    this.selectedOptionId = null;
+    this.selectedOption = {} as QuestionOption;
     this.displayResultPanel = false;
     if (this.currentQuestionIndex <= this.lesson.questions.length - 2) {
       this.currentQuestionIndex++;

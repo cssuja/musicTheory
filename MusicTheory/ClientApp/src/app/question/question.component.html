@@ -20,7 +20,7 @@
           <div class="list-group"
                *ngIf="textOptions && textOptions.length > 0">
             <button *ngFor="let option of textOptions"
-                    (click)="setSelectedOption(option.id)"
+                    (click)="setSelectedOption(option)"
                     class="list-group-item list-group-item-action option"
                     [disabled]="displayResultPanel">
               {{option.option}}
@@ -28,8 +28,9 @@
           </div>
           <div class="row">
             <div *ngFor="let option of imageOptions"
-                 class="col-6">
-              <img (click)="setSelectedOption(option.id)"
+                 class="col-6 image-option"
+                 [ngClass]="{'selected': selectedOption.id === option.id}">
+              <img (click)="setSelectedOption(option)"
                    class="img-fluid mx-auto d-block rounded"
                    src="{{'data:image/jpg;base64,' + option.option}}" />
             </div>
@@ -55,9 +56,9 @@
         </div>
         <div class="col-md-6 col-12 text-center order-first order-md-last">
           <button class="btn action-button"
-                  [ngClass]="{'btn-success' : selectedOptionId, 'btn-secondary' : !selectedOptionId}"
+                  [ngClass]="{'btn-success' : selectedOption.id, 'btn-secondary' : !selectedOption.id}"
                   (click)="checkIfCorrect()"
-                  [disabled]="!selectedOptionId">Check</button>
+                  [disabled]="!selectedOption.id">Check</button>
         </div>
       </div>
 
@@ -84,7 +85,20 @@
                      style="font-size:60px;">clear</i>
                 </div>
                 <div class="col-8 result-text">
-                  Correct solution: {{correctAnswer.option}}
+                  <div *ngIf="correctAnswer.typeId === 1">
+                    Correct solution: {{correctAnswer.option}}
+                  </div>
+                  <div class="row"
+                       *ngIf="correctAnswer.typeId === 2">
+                    <div class="col-9">Correct solution:
+                    </div>
+                    <div class="col-3">
+                      <img class="img-fluid mx-auto d-block rounded correct-answer"
+                           src="{{'data:image/jpg;base64,' + correctAnswer.option}}" />
+                    </div>
+
+
+                  </div>
                 </div>
               </div>
             </div>
