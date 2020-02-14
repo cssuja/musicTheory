@@ -74,11 +74,12 @@
   <div *ngIf="currentLesson.id && currentQuestion.id">
     <label>Options</label>
 
-    <select class="form-control"
+    <select *ngIf="currentTextOptions && currentTextOptions.length > 0"
+            class="form-control"
             (change)="onOptionSelect($event)">
       <option value="">-</option>
       <option [value]="option.id"
-              *ngFor="let option of currentQuestion.options">
+              *ngFor="let option of currentTextOptions">
         {{option.option.toString()}}
       </option>
     </select>
@@ -104,6 +105,13 @@
         <label class="form-check-label">
           Is this the correct answer?
         </label>
+      </div>
+      <div class="col-12">
+        <div class="form-group">
+          <label for="file">Choose File</label>
+          <input type="file"
+                 (change)="handleFileInput($event.target.files)">
+        </div>
       </div>
     </div>
 

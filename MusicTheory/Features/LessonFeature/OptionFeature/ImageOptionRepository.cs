@@ -38,7 +38,7 @@ where Id = @optionId
             var imageOptionSql = @"
 MERGE INTO ImageOptions
     USING (SELECT @Id    AS vId,
-                @Image      AS vText) p
+                @Image      AS vImage) p
     ON (Id = vId)
 WHEN MATCHED
 THEN
@@ -50,7 +50,7 @@ INSERT     (Image)
 OUTPUT inserted.Id;
 ";
 
-            return cnn.Query<int>(imageOptionSql, new { image = (byte[])option.Option, option.Id }, t).Single();
+            return cnn.Query<int>(imageOptionSql, new { image = Convert.FromBase64String(option.Option.ToString()), option.Id }, t).Single();
         }
     }
 }

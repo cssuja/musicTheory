@@ -15,6 +15,15 @@ export class AddLessonComponent implements OnInit {
   currentQuestion: Question = {} as Question;
   currentOption: QuestionOption = {} as QuestionOption;
   message: string;
+
+  get currentTextOptions() {
+    return this.currentQuestion && this.currentQuestion.options.filter(o => o.typeId === 1);
+  }
+
+  get currentImageOptions() {
+    return this.currentQuestion && this.currentQuestion.options.filter(o => o.typeId === 2);
+  }
+
   constructor(private addLessonService: AddLessonService,
     private lessonService: LessonsService,
     private questionService: QuestionService) { }
@@ -187,5 +196,17 @@ export class AddLessonComponent implements OnInit {
     setTimeout(() => {
       this.message = '';
     }, 2000);
+  }
+
+  handleFileInput(files: File[]) {
+    this.currentOption.typeId = 2;
+
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      this.currentOption.option = (reader.result as string).replace('data:image/png;base64,', '');
+    };
+
+    reader.readAsDataURL(files[0]);
   }
 }
