@@ -30,6 +30,11 @@ namespace MusicTheory.Controllers
         {
             return _service.GetLessons();
         }
+        [HttpGet("ExistingOptions")]
+        public List<SelectItem> GetExistingOptions()
+        {
+            return _service.GetExistingOptions();
+        }
 
         [HttpPut]
         public int Put([FromBody] Lesson lesson)

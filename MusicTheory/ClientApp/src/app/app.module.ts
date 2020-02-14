@@ -13,6 +13,7 @@ import { LessonsComponent } from './lessons/lessons.component';
 import { LessonsModule } from './lessons/lessons.module';
 import { AddLessonModule } from './add-lesson/add-lesson.module';
 import { AddLessonComponent } from './add-lesson/add-lesson.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { AddLessonComponent } from './add-lesson/add-lesson.component';
       { path: 'lessons', component: LessonsComponent },
       { path: 'addlesson', component: AddLessonComponent }
 
-    ])
+    ]),
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

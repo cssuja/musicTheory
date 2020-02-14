@@ -17,3 +17,9 @@ interface Lesson {
     name: string;
     questions: Question[]
 }
+
+interface SelectItem {
+    id: number;
+    display: object;
+    typeId: number;
+}

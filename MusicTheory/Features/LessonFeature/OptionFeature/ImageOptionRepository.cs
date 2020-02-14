@@ -32,6 +32,19 @@ where Id = @optionId
             return Convert.ToBase64String(option);
         }
 
+        public IList<SelectItem> GetOptions(SqlConnection cnn, SqlTransaction t)
+        {
+            var imageOptionSql = @"
+select Id, Image as Display from ImageOptions
+";
+            var options = cnn.Query<SelectItem>(imageOptionSql, transaction: t).Select(x => new SelectItem { 
+                Id = x.Id,
+                Display = Convert.ToBase64String(ObjectToByteArray(x.Display)),
+                TypeId = OptionType.Image
+            } ).ToList();
+
+            return options;
+        }
 
         public int MergeOption(SqlConnection cnn, SqlTransaction t, QuestionOption option)
         {
@@ -51,6 +64,18 @@ OUTPUT inserted.Id;
 ";
 
             return cnn.Query<int>(imageOptionSql, new { image = Convert.FromBase64String(option.Option.ToString()), option.Id }, t).Single();
+        }
+
+        byte[] ObjectToByteArray(object obj)
+        {
+            if (obj == null)
+                return null;
+            BinaryFormatter bf = new BinaryFormatter();
+            using (MemoryStream ms = new MemoryStream())
+            {
+                bf.Serialize(ms, obj);
+                return ms.ToArray();
+            }
         }
     }
 }

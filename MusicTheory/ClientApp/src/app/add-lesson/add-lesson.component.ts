@@ -15,6 +15,7 @@ export class AddLessonComponent implements OnInit {
   currentQuestion: Question = {} as Question;
   currentOption: QuestionOption = {} as QuestionOption;
   message: string;
+  existingOptions: SelectItem[];
 
   get currentTextOptions() {
     return this.currentQuestion && this.currentQuestion.options.filter(o => o.typeId === 1);
@@ -24,6 +25,7 @@ export class AddLessonComponent implements OnInit {
     return this.currentQuestion && this.currentQuestion.options.filter(o => o.typeId === 2);
   }
 
+
   constructor(private addLessonService: AddLessonService,
     private lessonService: LessonsService,
     private questionService: QuestionService) { }
@@ -31,11 +33,18 @@ export class AddLessonComponent implements OnInit {
   ngOnInit() {
     this.initialiseCurrentLesson();
     this.getLessons();
+    this.getExistingOptions();
   }
 
   private getLessons() {
     this.lessonService.getLessons().subscribe(lessons => {
       this.lessons = lessons;
+    });
+  }
+
+  private getExistingOptions() {
+    this.lessonService.getExistingOptions().subscribe(options => {
+      this.existingOptions = options;
     });
   }
 
@@ -110,6 +119,7 @@ export class AddLessonComponent implements OnInit {
 
         this.getLesson(this.currentLesson.id);
         this.displayMessage('Saved Successfully');
+        this.getExistingOptions();
       },
       error => {
         this.displayMessage('Save failed');

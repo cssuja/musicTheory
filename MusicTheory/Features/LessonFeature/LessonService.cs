@@ -19,6 +19,7 @@ namespace MusicTheory.Features.LessonFeature
         void DeleteOption(int questionId, int optionId, OptionType typeId);
         void DeleteQuestion(int lessonId, int questionId);
         void DeleteLesson(int lessonId);
+        List<SelectItem> GetExistingOptions();
     }
     public class LessonService : ILessonService
     {
@@ -230,6 +231,23 @@ namespace MusicTheory.Features.LessonFeature
                     t.Commit();
                 }
             }
+        }
+
+        public List<SelectItem> GetExistingOptions()
+        {
+            List<SelectItem> options = new List<SelectItem>();
+            using (var cnn = new SqlConnection(_config.ConnectionStrings.MusicTheoryConnectionString))
+            {
+                cnn.Open();
+
+                using (var t = cnn.BeginTransaction())
+                {
+                    options.AddRange(_optionRepositoryFactory.CreateRepository(OptionType.Text).GetOptions(cnn, t));
+                    options.AddRange(_optionRepositoryFactory.CreateRepository(OptionType.Image).GetOptions(cnn, t));
+                }
+            }
+
+            return options;
         }
     }
 }

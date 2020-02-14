@@ -8,6 +8,9 @@ namespace MusicTheory.Features.LessonFeature.OptionFeature
     {
         int MergeOption(SqlConnection cnn, SqlTransaction t, QuestionOption option);
         object GetOption(SqlConnection cnn, SqlTransaction t, int optionId);
+        IList<SelectItem> GetOptions(SqlConnection cnn, SqlTransaction t);
         void DeleteOption(SqlConnection cnn, SqlTransaction t, int optionId);
+
+
     }
 }

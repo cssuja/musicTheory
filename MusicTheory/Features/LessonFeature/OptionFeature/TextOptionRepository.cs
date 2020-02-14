@@ -30,6 +30,20 @@ where Id = @optionId
             return option;
         }
 
+        public IList<SelectItem> GetOptions(SqlConnection cnn, SqlTransaction t)
+        {
+            var textOptionSql = @"
+select Id, Text as Display from TextOptions
+";
+            var options = cnn.Query<SelectItem>(textOptionSql, transaction: t).ToList();
+
+            foreach(var option in options)
+            {
+                option.TypeId = OptionType.Text;
+            }
+
+            return options;
+        }
 
         public int MergeOption(SqlConnection cnn, SqlTransaction t, QuestionOption option)
         {

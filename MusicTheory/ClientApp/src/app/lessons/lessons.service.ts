@@ -14,4 +14,9 @@ export class LessonsService {
     const url = `https://localhost:44366/api/lesson/lessons`;
     return this.http.get<Lesson[]>(url);
   }
+
+  getExistingOptions(): Observable<SelectItem[]> {
+    const url = `https://localhost:44366/api/lesson/existingoptions`;
+    return this.http.get<SelectItem[]>(url);
+  }
 }
