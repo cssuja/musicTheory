@@ -39,7 +39,7 @@ select Id, Image as Display from ImageOptions
 ";
             var options = cnn.Query<SelectItem>(imageOptionSql, transaction: t).Select(x => new SelectItem { 
                 Id = x.Id,
-                Display = Convert.ToBase64String(ObjectToByteArray(x.Display)),
+                Display = x.Display,
                 TypeId = OptionType.Image
             } ).ToList();
 

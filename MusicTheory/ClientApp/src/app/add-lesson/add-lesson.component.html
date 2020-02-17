@@ -116,6 +116,24 @@
     </div>
 
 
+    <mat-form-field>
+      <mat-label>Add Existing Option</mat-label>
+      <mat-select>
+        <mat-option *ngFor="let option of existingOptions"
+                    [value]="option.id">
+          <div *ngIf="option.typeId == 1">
+            {{option.display}}
+          </div>
+
+          <div *ngIf="option.typeId == 2">
+            <img class="img-fluid mx-auto d-block rounded select-image"
+                 src="{{'data:image/png;base64,' + option.display}}" />
+          </div>
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+
     <button type="button"
             class="btn btn-primary"
             (click)="saveOption()">Save Option</button>
@@ -125,21 +143,3 @@
             class="btn btn-danger"
             (click)="deleteOption()">Delete Option</button>
   </div>
-
-  <h4>Basic mat-select</h4>
-  <mat-form-field>
-    <mat-label>Add Existing Option</mat-label>
-    <mat-select>
-      <mat-option *ngFor="let option of existingOptions"
-                  [value]="option.id">
-        <div *ngIf="option.typeId == 1">
-          {{option.display}}
-        </div>
-
-        <div *ngIf="option.typeId == 2">
-          <img class="img-fluid mx-auto d-block rounded"
-               src="{{'data:image/png;base64,' + option.display}}" />
-        </div>
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
